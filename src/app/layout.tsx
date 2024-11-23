@@ -27,10 +27,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${honerThose.variable} ${freesentation.variable} antialiased w-[45%] mx-auto bg-sky h-screen mt-8 my-20`}
+        className={`${honerThose.variable} ${freesentation.variable} antialiased min-h-screen bg-sky w-screen`}
       >
         {children}
-        <div className="fixed bottom-5 left-1/2 -translate-x-1/2 flex items-center justify-center border-0 border-black h-12 w-40 bg-darkSky/70 rounded-2xl backdrop-blur-md"></div>
       </body>
     </html>
   );
