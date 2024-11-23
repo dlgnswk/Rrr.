@@ -61,6 +61,7 @@ export default {
       },
       fontSize: {
         title: "150px",
+        mobileTitle: "100px",
       },
       borderRadius: {
         lg: "var(--radius)",
