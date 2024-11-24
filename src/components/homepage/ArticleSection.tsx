@@ -1,4 +1,4 @@
-import posts from "@/constants/posts";
+import { posts } from "@/constants/posts";
 import { Separator } from "@/components/ui/separator";
 
 interface ArticleSectionProps {
