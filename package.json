@@ -3,10 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack --hostname 0.0.0.0 --port 3000",
-    "build": "next build",
+    "dev": "next dev --turbopack",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "postinstall": "prisma generate",
+    "build": "prisma generate && next build",
+    "vercel-deploy": "next build && next export"
   },
   "dependencies": {
     "@ai-sdk/openai": "^1.0.4",
@@ -101,6 +103,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@tailwindcss/typography": "^0.5.15",
     "@types/node": "^20.17.7",
     "@types/react": "^18",
     "@types/react-dom": "^18",
