@@ -1,4 +1,4 @@
-import posts from "@/constants/posts";
+import { posts } from "@/constants/posts";
 import ArticleSection from "./ArticleSection";
 import Link from "next/link";
 
