@@ -27,7 +27,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${honerThose.variable} ${freesentation.variable} antialiased min-h-screen bg-sky w-screen`}
+        className={`${honerThose.variable} ${freesentation.variable} antialiased min-h-screen w-screen`}
       >
         {children}
       </body>
