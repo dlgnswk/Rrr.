@@ -1,4 +1,16 @@
-const posts = [
+export const postCategories = ["frontend", "backend", "CS", "network"];
+export const postTags = [
+  "react",
+  "next",
+  "typescript",
+  "javascript",
+  "nodejs",
+  "zustand",
+  "shadcn",
+  "plate",
+];
+
+export const posts = [
   {
     slug: "react-query-api-optimization",
     title: "리액트 쿼리를 도입해 API 최적화하기",
@@ -57,5 +69,3 @@ const posts = [
     tags: ["react", "zustand"],
   },
 ];
-
-export default posts;
