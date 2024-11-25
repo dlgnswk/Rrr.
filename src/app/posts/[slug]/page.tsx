@@ -5,7 +5,7 @@ import { Metadata } from "next";
 
 import { posts } from "@/constants/posts";
 
-type PageProps = {
+type Props = {
   params: { slug: string };
 };
 
@@ -13,7 +13,7 @@ export async function generateStaticParams() {
   return posts.map((post) => ({ slug: post.slug }));
 }
 
-export default async function PostPage({ params }: PageProps) {
+export default async function PostPage({ params }: Props) {
   const post = posts.find((post) => post.slug === params.slug);
 
   if (!post) {
@@ -137,9 +137,14 @@ export default async function PostPage({ params }: PageProps) {
   );
 }
 
+type GenerateMetadataProps = {
+  params: { slug: string };
+  searchParams: { [key: string]: string | string[] | undefined };
+};
+
 export async function generateMetadata({
   params,
-}: PageProps): Promise<Metadata> {
+}: GenerateMetadataProps): Promise<Metadata> {
   return {
     title: `Post - ${params.slug}`,
   };
