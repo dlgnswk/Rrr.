@@ -6,7 +6,7 @@ import { Metadata } from "next";
 import { posts } from "@/constants/posts";
 
 type PageProps = {
-  params: Promise<{ slug: string }>;
+  params: { slug: string };
 };
 
 export async function generateStaticParams() {
@@ -14,8 +14,7 @@ export async function generateStaticParams() {
 }
 
 export default async function PostPage({ params }: PageProps) {
-  const resolvedParams = await params;
-  const post = posts.find((post) => post.slug === resolvedParams.slug);
+  const post = posts.find((post) => post.slug === params.slug);
 
   if (!post) {
     return <div>Post not found</div>;
