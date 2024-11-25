@@ -1,20 +1,20 @@
 import HomepageTitle from "@/components/homepage/HomepageTitle";
 import PostpageLayout from "@/components/posts/PostpageLayout";
 import { Separator } from "@/components/ui/separator";
+import { Metadata } from "next";
 
 import { posts } from "@/constants/posts";
 
-interface PageParams {
-  params: {
-    slug: string;
-  };
-}
+type Props = {
+  params: { slug: string };
+  searchParams: Record<string, string | string[] | undefined>;
+};
 
 export async function generateStaticParams() {
   return posts.map((post) => ({ slug: post.slug }));
 }
 
-export default async function PostPage({ params }: PageParams) {
+export default async function PostPage({ params }: Props) {
   const post = posts.find((post) => post.slug === params.slug);
 
   if (!post) {
@@ -136,4 +136,10 @@ export default async function PostPage({ params }: PageParams) {
       </article>
     </PostpageLayout>
   );
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  return {
+    title: `Post - ${params.slug}`,
+  };
 }
