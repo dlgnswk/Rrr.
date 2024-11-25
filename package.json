@@ -6,9 +6,9 @@
     "dev": "next dev --turbopack",
     "start": "next start",
     "lint": "next lint",
-    "postinstall": "npx prisma generate",
-    "build": "next build",
-    "vercel-deploy": "next build && next export"
+    "postinstall": "./node_modules/.bin/prisma generate",
+    "build": "./node_modules/.bin/prisma generate && next build",
+    "vercel-build": "./node_modules/.bin/prisma generate && next build"
   },
   "dependencies": {
     "@ai-sdk/openai": "^1.0.4",
