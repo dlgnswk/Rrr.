@@ -5,16 +5,17 @@ import { Metadata } from "next";
 
 import { posts } from "@/constants/posts";
 
-type Props = {
-  params: { slug: string };
+type PageProps = {
+  params: Promise<{ slug: string }>;
 };
 
 export async function generateStaticParams() {
   return posts.map((post) => ({ slug: post.slug }));
 }
 
-export default async function PostPage({ params }: Props) {
-  const post = posts.find((post) => post.slug === params.slug);
+export default async function PostPage({ params }: PageProps) {
+  const resolvedParams = await params;
+  const post = posts.find((post) => post.slug === resolvedParams.slug);
 
   if (!post) {
     return <div>Post not found</div>;
@@ -111,7 +112,7 @@ export default async function PostPage({ params }: Props) {
           <h2>6.2 선택적 데이터 구조화</h2>
           <p>
             select 옵션을 사용하여 필요한 데이터만 선택적으로 가져올 수
-            있습니다. 이를 통해 메모리 사용량을 줄이고 렌더링 성능을 개선할 수
+            있습니다. 이를 통해 메리 사용량을 줄이고 렌더링 성능을 개선할 수
             있습니다.
           </p>
           <br />
