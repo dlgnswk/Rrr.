@@ -5,15 +5,16 @@ import { Metadata } from "next";
 
 import { posts } from "@/constants/posts";
 
-type PageProps = {
+type Props = {
   params: { slug: string };
+  searchParams?: { [key: string]: string | string[] | undefined };
 };
 
 export async function generateStaticParams() {
   return posts.map((post) => ({ slug: post.slug }));
 }
 
-export default async function PostPage({ params }: PageProps) {
+export default async function PostPage({ params, searchParams }: Props) {
   const post = posts.find((post) => post.slug === params.slug);
 
   if (!post) {
@@ -124,7 +125,7 @@ export default async function PostPage({ params }: PageProps) {
           <br />
           <p>
             마치며 React Query V5는 프론트엔드 애플리케이션의 서버 상태 관리를
-            크게 단순화합니. 캐싱, 동기화, 에러 처리 등 복잡한 상태 관리 로직을
+            크게 단순화합니. 캐싱, 동기���, 에러 처리 등 복잡한 상태 관리 로직을
             쉽게 구현할 수 있으며, 이는 곧 개발 생산성과 애플리케이션 성능
             향상으로 이어집니다. 이러한 기능들을 적절히 활용하면 사용자 경험이
             뛰어난 웹 애플리케이션을 구축할 수 있습니다. React Query V5는
@@ -137,14 +138,7 @@ export default async function PostPage({ params }: PageProps) {
   );
 }
 
-type GenerateMetadataProps = {
-  params: { slug: string };
-  searchParams: { [key: string]: string | string[] | undefined };
-};
-
-export async function generateMetadata({
-  params,
-}: GenerateMetadataProps): Promise<Metadata> {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `Post - ${params.slug}`,
   };
