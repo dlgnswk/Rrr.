@@ -4,11 +4,17 @@ import { Separator } from "@/components/ui/separator";
 
 import { posts } from "@/constants/posts";
 
+interface PageParams {
+  params: {
+    slug: string;
+  };
+}
+
 export async function generateStaticParams() {
   return posts.map((post) => ({ slug: post.slug }));
 }
 
-export default function PostPage({ params }: { params: { slug: string } }) {
+export default async function PostPage({ params }: PageParams) {
   const post = posts.find((post) => post.slug === params.slug);
 
   if (!post) {
@@ -92,8 +98,7 @@ export default function PostPage({ params }: { params: { slug: string } }) {
           <h2>5.2 낙관적 업데이트</h2>
           <p>
             mutation의 onMutate 콜백을 활용하여 서버 응답 전에 UI를 먼저
-            업데이트할 수 있습니다. 실패 시 이전 상태로 롤백하는 것도
-            가능합��다.
+            업데이트할 수 있습니다. 실패 시 이전 상태로 롤백하는 것도 가능합다.
           </p>
           <br />
           <h1>6. 성능 최적화 팁</h1>
@@ -120,10 +125,10 @@ export default function PostPage({ params }: { params: { slug: string } }) {
           <br />
           <p>
             마치며 React Query V5는 프론트엔드 애플리케이션의 서버 상태 관리를
-            크게 단순화합니��. 캐싱, 동기화, 에러 처리 등 복잡한 상태 관리
-            로직을 쉽게 구현할 수 있으며, 이는 곧 개발 생산성과 애플리케이션
-            성능 향상으로 이어집니다. 이러한 기능들을 적절히 활용하면 사용자
-            경험이 뛰어난 웹 애플리케이션을 구축할 수 있습니다. React Query V5는
+            크게 단순화합니. 캐싱, 동기화, 에러 처리 등 복잡한 상태 관리 로직을
+            쉽게 구현할 수 있으며, 이는 곧 개발 생산성과 애플리케이션 성능
+            향상으로 이어집니다. 이러한 기능들을 적절히 활용하면 사용자 경험이
+            뛰어난 웹 애플리케이션을 구축할 수 있습니다. React Query V5는
             계속해서 발전하고 있으며, 프론트엔드 개발자들에게 필수적인 도구로
             자리잡고 있습니다.
           </p>
