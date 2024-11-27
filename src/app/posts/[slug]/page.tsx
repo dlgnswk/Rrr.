@@ -50,7 +50,7 @@ export default async function PostPage({ params }: Props) {
         </div>
 
         <div className="prose prose-slate prose-h1:text-4xl prose-h2:text-3xl max-w-none">
-          <h1>1. React Query란?</h1>
+          <h1 className="text-4xl font-bold">1. React Query란?</h1>
           <p>
             React Query는 서버 상태 관리를 위한 강력한 라이브러리입니다. V5
             버전에서는 더욱 개선된 성능과 새로운 기능들이 추가되었습니다.
