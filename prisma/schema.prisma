@@ -11,10 +11,12 @@ model Post {
   id          Int      @id @default(autoincrement())
   slug        String   @unique
   title       String
+  titleStyle  Json?
   content     String   @db.Text
-  description String?
+  description String
+  keywords    String[]
   category    String
   tags        String[]
-  publishedAt DateTime @default(now())
+  publishedAt DateTime
   updatedAt   DateTime @updatedAt
 }
