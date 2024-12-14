@@ -11,11 +11,15 @@ export default function ArticleSectionGroup({
 }: ArticleSectionGroupProps) {
   return (
     <>
-      {posts.map((post, index) => (
-        <Link href={`/posts/${post.slug}`} key={post.slug}>
-          <ArticleSection post={post} index={index} />
-        </Link>
-      ))}
+      {posts.length > 0 ? (
+        posts.map((post, index) => (
+          <Link href={`/posts/${post.slug}`} key={post.slug}>
+            <ArticleSection post={post} index={index} />
+          </Link>
+        ))
+      ) : (
+        <div>데이터가 없습니다.</div>
+      )}
     </>
   );
 }
