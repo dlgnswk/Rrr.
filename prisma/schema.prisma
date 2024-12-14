@@ -12,7 +12,7 @@ model Post {
   slug        String   @unique
   title       String
   titleStyle  Json?
-  content     String   @db.Text
+  content     Json
   description String
   keywords    String[]
   category    String
