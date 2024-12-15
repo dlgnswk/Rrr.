@@ -2,13 +2,13 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET(
   request: Request,
-  { params }: { params: { slug: string } }
+  context: { params: { slug: string } }
 ): Promise<Response> {
-  const { slug } = params;
-
   try {
     const post = await prisma.post.findUnique({
-      where: { slug },
+      where: {
+        slug: context.params.slug,
+      },
     });
 
     if (!post) {
