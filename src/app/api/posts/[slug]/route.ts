@@ -1,24 +1,26 @@
 import { prisma } from "@/lib/prisma";
-import { NextRequest } from "next/server";
 
-type Props = {
-  params: { slug: string };
-};
+export async function GET(
+  request: Request,
+  { params }: { params: { slug: string } }
+) {
+  const { slug } = params;
 
-export async function GET(request: NextRequest, props: Props) {
   try {
     const post = await prisma.post.findUnique({
-      where: {
-        slug: props.params.slug,
-      },
+      where: { slug },
     });
 
     if (!post) {
-      return Response.json({ error: "Post not found" }, { status: 404 });
+      return new Response(JSON.stringify({ error: "Post not found" }), {
+        status: 404,
+      });
     }
 
-    return Response.json(post);
+    return new Response(JSON.stringify(post));
   } catch (error) {
-    return Response.json({ error: "Failed to fetch post" }, { status: 500 });
+    return new Response(JSON.stringify({ error: "Failed to fetch post" }), {
+      status: 500,
+    });
   }
 }
