@@ -3,16 +3,14 @@ import PostpageLayout from "@/components/posts/PostpageLayout";
 import PostContent from "../PostContent";
 
 interface PropType {
-  params: Promise<{ slug: string }>;
+  params: { slug: string };
 }
 
-export default async function PostPage({ params }: PropType) {
-  const resolvedParams = await params;
-
+export default function PostPage({ params }: PropType) {
   return (
     <PostpageLayout>
       <HomepageTitle />
-      <PostContent slug={resolvedParams.slug} />
+      <PostContent slug={params.slug} />
     </PostpageLayout>
   );
 }
