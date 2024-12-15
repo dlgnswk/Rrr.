@@ -1,8 +1,8 @@
+import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { type NextRequest } from "next/server";
 
 export async function GET(
-  request: NextRequest,
+  request: Request,
   { params }: { params: { slug: string } }
 ) {
   try {
@@ -13,11 +13,14 @@ export async function GET(
     });
 
     if (!post) {
-      return Response.json({ error: "Post not found" }, { status: 404 });
+      return NextResponse.json({ error: "Post not found" }, { status: 404 });
     }
 
-    return Response.json(post);
+    return NextResponse.json(post);
   } catch (error) {
-    return Response.json({ error: "Failed to fetch post" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to fetch post" },
+      { status: 500 }
+    );
   }
 }
