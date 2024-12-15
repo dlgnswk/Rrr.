@@ -1,15 +1,10 @@
 import { prisma } from "@/lib/prisma";
-
-interface Context {
-  params: {
-    slug: string;
-  };
-}
+import { type NextRequest } from "next/server";
 
 export async function GET(
-  request: Request,
-  { params }: Context
-): Promise<Response> {
+  request: NextRequest,
+  { params }: { params: { slug: string } }
+) {
   try {
     const post = await prisma.post.findUnique({
       where: {
@@ -18,19 +13,11 @@ export async function GET(
     });
 
     if (!post) {
-      return new Response(JSON.stringify({ error: "Post not found" }), {
-        status: 404,
-        headers: { "Content-Type": "application/json" },
-      });
+      return Response.json({ error: "Post not found" }, { status: 404 });
     }
 
-    return new Response(JSON.stringify(post), {
-      headers: { "Content-Type": "application/json" },
-    });
+    return Response.json(post);
   } catch (error) {
-    return new Response(JSON.stringify({ error: "Failed to fetch post" }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
+    return Response.json({ error: "Failed to fetch post" }, { status: 500 });
   }
 }
