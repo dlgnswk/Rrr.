@@ -2,15 +2,17 @@ import HomepageTitle from "@/components/homepage/HomepageTitle";
 import PostpageLayout from "@/components/posts/PostpageLayout";
 import PostContent from "../PostContent";
 
-interface PropType {
-  params: { slug: string };
+interface Props {
+  params: Promise<{ slug: string }>;
 }
 
-export default function PostPage({ params }: PropType) {
+export default async function PostPage({ params }: Props) {
+  const { slug } = await params;
+
   return (
     <PostpageLayout>
       <HomepageTitle />
-      <PostContent slug={params.slug} />
+      <PostContent slug={slug} />
     </PostpageLayout>
   );
 }
