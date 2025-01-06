@@ -18,6 +18,7 @@
 
 body {
   font-family: "Freesentation", Arial, Helvetica, sans-serif;
+  transition: background-color 0.5s ease, color 0.5s ease;
 }
 
 @layer base {
@@ -131,6 +132,30 @@ body {
     --brand: 213.3 93.9% 67.8%;
     --highlight: 48 96% 53%;
   }
+
+  [data-theme="skyblue"] {
+    --background: 203 71% 68%;
+    --foreground: 0 0% 0%;
+    transition: background-color 0.5s ease, color 0.5s ease;
+  }
+
+  [data-theme="forest"] {
+    --background: 152 69% 38%;
+    --foreground: 0 0% 0%;
+    transition: background-color 0.5s ease, color 0.5s ease;
+  }
+
+  [data-theme="dark"] {
+    --background: 215 28% 17%;
+    --foreground: 220 13% 95%;
+    transition: background-color 0.5s ease, color 0.5s ease;
+  }
+
+  [data-theme="dune"] {
+    --background: 25 100% 61%;
+    --foreground: 0 0% 18%;
+    transition: background-color 0.5s ease, color 0.5s ease;
+  }
 }
 
 @layer base {
@@ -140,4 +165,24 @@ body {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+body[data-theme="skyblue"] {
+  background-color: #74bde8;
+  color: #000000;
+}
+
+body[data-theme="forest"] {
+  background-color: #13ae70;
+  color: #000000;
+}
+
+body[data-theme="dark"] {
+  background-color: #1f2937;
+  color: #f3f4f6;
+}
+
+body[data-theme="dune"] {
+  background-color: #ff8c39;
+  color: #2f2f2f;
 }

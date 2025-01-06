@@ -14,6 +14,22 @@ export default {
         darkSky: "#5BAEDF",
       },
       colors: {
+        skyblue: {
+          background: "#74BDE8",
+          text: "#000000",
+        },
+        dune: {
+          background: "#FF8C39",
+          text: "#2F2F2F",
+        },
+        forest: {
+          background: "#13AE70",
+          text: "#000000",
+        },
+        dark: {
+          background: "#1F29 37",
+          text: "#F3F4F6",
+        },
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         card: {
