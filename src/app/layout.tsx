@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { Providers } from "./Providers";
+import { ThemeProvider } from "./themeProvider";
+import { ThemeSwitch } from "./themeSwitch";
 
 const honerThose = localFont({
   src: "./fonts/honer-those.otf",
@@ -26,11 +28,21 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${honerThose.variable} ${freesentation.variable} antialiased min-h-screen w-screen`}
+        suppressHydrationWarning
       >
-        <Providers>{children}</Providers>
+        <ThemeProvider
+          attribute="data-theme"
+          defaultTheme="skyblue"
+          themes={["dark", "skyblue", "forest", "dune"]}
+          enableSystem={false}
+          disableTransitionOnChange
+        >
+          <ThemeSwitch />
+          <Providers>{children}</Providers>
+        </ThemeProvider>
       </body>
     </html>
   );
