@@ -36,7 +36,7 @@ export default function RootLayout({
         <ThemeProvider
           attribute="data-theme"
           defaultTheme="skyblue"
-          themes={["dark", "skyblue", "forest", "dune"]}
+          themes={["skyblue", "light", "forest", "dune"]}
           enableSystem={false}
           disableTransitionOnChange
         >

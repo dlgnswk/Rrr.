@@ -8,7 +8,7 @@ export function ThemeSwitch() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [position, setPosition] = useState<
-    "skyblue" | "dark" | "dune" | "forest"
+    "skyblue" | "light" | "dune" | "forest"
   >("skyblue");
 
   useEffect(() => {
@@ -17,7 +17,7 @@ export function ThemeSwitch() {
 
   useEffect(() => {
     if (theme) {
-      setPosition(theme as "skyblue" | "dark" | "dune" | "forest");
+      setPosition(theme as "skyblue" | "light" | "dune" | "forest");
     }
   }, [theme]);
 
@@ -27,20 +27,20 @@ export function ThemeSwitch() {
 
   const switchPositions = {
     skyblue: { x: 0, y: 0 },
-    dark: { x: "calc(80px - 36px - 8px)", y: 0 },
+    light: { x: "calc(80px - 36px - 8px)", y: 0 },
     dune: { x: 0, y: "calc(80px - 36px - 8px)" },
     forest: { x: "calc(80px - 36px - 8px)", y: "calc(80px - 36px - 8px)" },
   };
 
   const switchColors = {
     skyblue: "#74BDE8",
-    dark: "#1f2937",
+    light: "#FFFFFF",
     dune: "#FF8C39",
     forest: "#13AE70",
   };
 
   const handleSwitch = (
-    newPosition: "skyblue" | "dark" | "dune" | "forest"
+    newPosition: "skyblue" | "light" | "dune" | "forest"
   ) => {
     setPosition(newPosition);
     setTheme(newPosition);
@@ -56,23 +56,25 @@ export function ThemeSwitch() {
             aria-label="Skyblue mode"
           >
             <div
-              className={`w-full h-full transition-colors duration-200 ${
-                theme !== "skyblue"
-                  ? "border-2 border-white rounded-full hover:border-[#74BDE8]"
-                  : ""
+              className={`w-full h-full transition-colors duration-200 rounded-full border-2 ${
+                theme === "skyblue"
+                  ? ""
+                  : theme === "light"
+                  ? "border-[#C8C8C8] hover:border-[#74BDE8]"
+                  : "border-white hover:border-[#74BDE8]"
               }`}
             />
           </button>
           <button
-            onClick={() => handleSwitch("dark")}
+            onClick={() => handleSwitch("light")}
             className="w-full h-full p-0.5"
-            aria-label="Dark mode"
+            aria-label="Light mode"
           >
             <div
-              className={`w-full h-full transition-colors duration-200 ${
-                theme !== "dark"
-                  ? "border-2 border-white rounded-full hover:border-[#1f2937]"
-                  : ""
+              className={`w-full h-full transition-colors duration-200 rounded-full border-2 ${
+                theme === "light"
+                  ? ""
+                  : "border-[#FFFFFF] hover:border-[#2F2F2F]"
               }`}
             />
           </button>
@@ -82,10 +84,12 @@ export function ThemeSwitch() {
             aria-label="Dune mode"
           >
             <div
-              className={`w-full h-full transition-colors duration-200 ${
-                theme !== "dune"
-                  ? "border-2 border-white rounded-full hover:border-[#FF8C39]"
-                  : ""
+              className={`w-full h-full transition-colors duration-200 rounded-full border-2 ${
+                theme === "dune"
+                  ? ""
+                  : theme === "light"
+                  ? "border-[#C8C8C8] hover:border-[#FF8C39]"
+                  : "border-white hover:border-[#FF8C39]"
               }`}
             />
           </button>
@@ -95,10 +99,12 @@ export function ThemeSwitch() {
             aria-label="Forest mode"
           >
             <div
-              className={`w-full h-full transition-colors duration-200 ${
-                theme !== "forest"
-                  ? "border-2 border-white rounded-full hover:border-[#13AE70]"
-                  : ""
+              className={`w-full h-full transition-colors duration-200 rounded-full border-2 ${
+                theme === "forest"
+                  ? ""
+                  : theme === "light"
+                  ? "border-[#C8C8C8] hover:border-[#13AE70]"
+                  : "border-white hover:border-[#13AE70]"
               }`}
             />
           </button>
@@ -107,9 +113,9 @@ export function ThemeSwitch() {
         <motion.div
           className="absolute w-8 h-8 rounded-full shadow-md border-2 border-foreground"
           animate={{
-            x: switchPositions[position].x,
-            y: switchPositions[position].y,
-            backgroundColor: switchColors[position],
+            x: switchPositions[position]?.x ?? 0,
+            y: switchPositions[position]?.y ?? 0,
+            backgroundColor: switchColors[position] ?? switchColors.skyblue,
           }}
           transition={{
             type: "spring",

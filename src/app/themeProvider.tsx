@@ -11,7 +11,7 @@ export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
     <NextThemesProvider
       attribute="data-theme"
       defaultTheme="skyblue"
-      themes={["skyblue", "dark", "dune", "forest"]}
+      themes={["skyblue", "light", "dune", "forest"]}
       enableSystem={false}
       {...props}
     >
