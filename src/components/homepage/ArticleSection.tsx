@@ -1,5 +1,6 @@
 import { posts } from "@/constants/posts";
 import { Separator } from "@/components/ui/separator";
+import Arrow from "./arrow";
 
 interface ArticleSectionProps {
   post: (typeof posts)[number];
@@ -14,7 +15,9 @@ export default function ArticleSection({ post, index }: ArticleSectionProps) {
           <span className="font-bold">{post.titleStyle.bold}</span>
           {post.titleStyle.rest}
         </h1>
-        <img src="/arrow.svg" alt="arrow" className="w-8 h-8 mb-1" />
+        <div className="text-foreground">
+          <Arrow />
+        </div>
       </div>
       <p className="text-2xl font-light">{post.description}</p>
       {index !== posts.length - 1 && <Separator className="my-6 bg-black" />}
