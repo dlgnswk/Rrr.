@@ -26,9 +26,9 @@ export default {
           background: "#13AE70",
           text: "#000000",
         },
-        dark: {
-          background: "#1F29 37",
-          text: "#F3F4F6",
+        light: {
+          background: "#000000",
+          text: "#2F2F2F",
         },
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
