@@ -4,6 +4,7 @@ import { useGetPostBySlug } from "@/queries/useGetPostBySlug";
 import { Separator } from "@/components/ui/separator";
 import { createPlateEditor } from "@udecode/plate-common/react";
 import { useEffect, useState } from "react";
+import Profile from "@/components/posts/[slug]/profile";
 
 const editor = createPlateEditor({
   plugins: [HtmlReactPlugin],
@@ -46,7 +47,9 @@ export default function PostContent({ slug }: { slug: string }) {
         <Separator className="my-6 bg-black" />
         <div className="flex flex-col gap-1">
           <div className="flex items-center gap-2">
-            <img src="/rrr.png" alt="rrr" className="w-10 h-10" />
+            <div className="w-10 h-10 text-foreground">
+              <Profile />
+            </div>
             <span className="font-honerThose text-xl pt-2">Reeraeroon</span>
           </div>
           <div className="flex flex-col gap-1 ml-auto text-xs text-right">
