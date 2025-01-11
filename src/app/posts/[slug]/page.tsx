@@ -3,11 +3,11 @@ import PostpageLayout from "@/components/posts/PostpageLayout";
 import PostContent from "../PostContent";
 
 interface Props {
-  params: Promise<{ slug: string }>;
+  params: { slug: string };
 }
 
 export default async function PostPage({ params }: Props) {
-  const { slug } = await params;
+  const { slug } = params;
 
   return (
     <PostpageLayout>
