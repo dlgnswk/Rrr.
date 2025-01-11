@@ -1,13 +1,10 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
-type RouteContext = {
-  params: {
-    slug: string;
-  };
-};
-
-export async function GET(request: NextRequest, { params }: RouteContext) {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Record<string, string> }
+) {
   try {
     const post = await prisma.post.findUnique({
       where: {
@@ -20,7 +17,7 @@ export async function GET(request: NextRequest, { params }: RouteContext) {
     }
 
     return NextResponse.json(post);
-  } catch (error) {
+  } catch (_error) {
     return NextResponse.json(
       { error: "Failed to fetch post" },
       { status: 500 }
