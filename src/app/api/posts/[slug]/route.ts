@@ -2,13 +2,14 @@ import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
-  _request: NextRequest,
-  { params }: { params: { slug: string } }
-): Promise<NextResponse> {
+  request: NextRequest,
+  props: { params: Promise<{ slug: string }> }
+) {
   try {
+    const { slug } = await props.params;
     const post = await prisma.post.findUnique({
       where: {
-        slug: params.slug,
+        slug,
       },
     });
 
