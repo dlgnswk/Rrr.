@@ -4,6 +4,7 @@ import "./globals.css";
 import { Providers } from "./Providers";
 import { ThemeProvider } from "./themeProvider";
 import { ThemeSwitch } from "./themeSwitch";
+import { ThemeDial } from "./themeDial";
 
 const honerThose = localFont({
   src: "./fonts/honer-those.otf",
@@ -40,7 +41,7 @@ export default function RootLayout({
           enableSystem={false}
           disableTransitionOnChange
         >
-          <ThemeSwitch />
+          <ThemeDial />
           <Providers>{children}</Providers>
         </ThemeProvider>
       </body>
