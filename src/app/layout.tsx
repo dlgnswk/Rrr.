@@ -2,9 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { Providers } from "./Providers";
-import { ThemeProvider } from "./themeProvider";
-import { ThemeSwitch } from "./themeSwitch";
-import { ThemeDial } from "./themeDial";
+import { ThemeWrapper } from "./themeWrapper";
 
 const honerThose = localFont({
   src: "./fonts/honer-those.otf",
@@ -34,16 +32,9 @@ export default function RootLayout({
         className={`${honerThose.variable} ${freesentation.variable} antialiased min-h-screen w-screen`}
         suppressHydrationWarning
       >
-        <ThemeProvider
-          attribute="data-theme"
-          defaultTheme="skyblue"
-          themes={["skyblue", "light", "forest", "dune"]}
-          enableSystem={false}
-          disableTransitionOnChange
-        >
-          <ThemeDial />
+        <ThemeWrapper>
           <Providers>{children}</Providers>
-        </ThemeProvider>
+        </ThemeWrapper>
       </body>
     </html>
   );
