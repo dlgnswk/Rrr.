@@ -1,9 +1,10 @@
 "use client";
 
 import ArticleSectionGroup from "./ArticleSectionGroup";
+import { Post } from "@/types/posts";
 
 interface HomepageArticleProps {
-  posts: any;
+  posts: Post[];
 }
 
 export default function HomepageArticle({ posts }: HomepageArticleProps) {
