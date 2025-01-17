@@ -1,9 +1,9 @@
-import { posts } from "@/constants/posts";
+import { Post } from "@/types/posts";
 import ArticleSection from "./ArticleSection";
 import Link from "next/link";
 
 interface ArticleSectionGroupProps {
-  posts: typeof posts;
+  posts: Post[];
 }
 
 export default function ArticleSectionGroup({
@@ -14,7 +14,7 @@ export default function ArticleSectionGroup({
       {posts.length > 0 ? (
         posts.map((post, index) => (
           <Link href={`/posts/${post.slug}`} key={post.slug}>
-            <ArticleSection post={post} index={index} />
+            <ArticleSection post={post} index={index} posts={posts} />
           </Link>
         ))
       ) : (
