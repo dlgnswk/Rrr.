@@ -1,13 +1,16 @@
-"use client";
-
-import { useGetPosts } from "@/queries/useGetPosts";
+import { Post } from "@/types/posts";
 import HomepageArticle from "./HomepageArticle";
 
-export default function PostsList() {
-  const { data: posts, isLoading, error } = useGetPosts();
+interface PostsListProps {
+  posts: Post[];
+}
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error loading posts</div>;
-
-  return <HomepageArticle posts={posts} />;
+export default function PostsList({ posts }: PostsListProps) {
+  return (
+    <div>
+      {posts.map((post) => (
+        <HomepageArticle key={post.slug} posts={posts} />
+      ))}
+    </div>
+  );
 }
