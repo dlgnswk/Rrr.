@@ -1,15 +1,9 @@
 "use client";
-import { useGetPostBySlug } from "@/queries/useGetPostBySlug";
 import { Separator } from "@/components/ui/separator";
 import Profile from "@/components/posts/[slug]/profile";
+import { Post } from "@/types/posts";
 
-export default function PostContent({ slug }: { slug: string }) {
-  const { data: post, isLoading, error } = useGetPostBySlug(slug);
-
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error loading post</div>;
-  if (!post) return <div>Post not found</div>;
-
+export default function PostContent({ post }: { post: Post }) {
   return (
     <article className="flex flex-col w-full gap-3">
       <div className="flex flex-col">
@@ -38,7 +32,9 @@ export default function PostContent({ slug }: { slug: string }) {
         </div>
         <Separator className="my-6 bg-black" />
       </div>
-      <div className="prose prose-slate prose-h1:text-4xl prose-h2:text-3xl max-w-none" />
+      <div className="prose prose-slate prose-h1:text-4xl prose-h2:text-3xl max-w-none">
+        {post.content}
+      </div>
     </article>
   );
 }
