@@ -16,7 +16,10 @@ export default function ArticleSection({
   return (
     <section className="flex flex-col w-full gap-3 cursor-pointer">
       <div className="flex justify-between items-end gap-8">
-        <h1 className="text-5xl break-keep">{post.title}</h1>
+        <h1 className="text-5xl break-keep">
+          <span className="font-bold">{post.titleStyle.bold}</span>
+          {post.titleStyle.rest}
+        </h1>
         <div className="text-foreground">
           <Arrow />
         </div>

@@ -12,6 +12,7 @@ export const postTags = [
 export type Post = {
   slug: string;
   title: string;
+  titleStyle: { bold: string; rest: string };
   description: string;
   category: (typeof postCategories)[number];
   tags: (typeof postTags)[number][];
