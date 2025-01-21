@@ -8,9 +8,7 @@ interface PostsListProps {
 export default function PostsList({ posts }: PostsListProps) {
   return (
     <div>
-      {posts.map((post) => (
-        <HomepageArticle key={post.slug} posts={posts} />
-      ))}
+      <HomepageArticle posts={posts} />
     </div>
   );
 }
