@@ -1,7 +1,16 @@
-import type { NextConfig } from "next";
+import createMDX from "@next/mdx";
+import rehypePrism from "rehype-prism-plus";
+import rehypeSlug from "rehype-slug";
 
-const nextConfig: NextConfig = {
-  /* config options here */
+const nextConfig = {
+  pageExtensions: ["js", "jsx", "ts", "tsx", "md", "mdx"],
 };
 
-export default nextConfig;
+const withMDX = createMDX({
+  options: {
+    remarkPlugins: [],
+    rehypePlugins: [rehypePrism, rehypeSlug],
+  },
+});
+
+export default withMDX(nextConfig);
