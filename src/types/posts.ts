@@ -1,3 +1,5 @@
+import { MDXRemoteSerializeResult } from "next-mdx-remote";
+
 export const postCategories = ["frontend", "backend", "CS", "network"] as const;
 export const postTags = [
   "react",
@@ -9,7 +11,7 @@ export const postTags = [
   "shadcn",
 ] as const;
 
-export type Post = {
+export interface Post {
   slug: string;
   title: string;
   titleStyle: { bold: string; rest: string };
@@ -19,5 +21,5 @@ export type Post = {
   publishedAt: string;
   updatedAt: string;
   keywords: string[];
-  content: string;
-};
+  content: MDXRemoteSerializeResult;
+}
