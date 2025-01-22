@@ -1,8 +1,15 @@
+"use client";
+
 import { Separator } from "@/components/ui/separator";
 import { Post } from "@/types/posts";
-import MDXContent from "@/components/mdx/MDXContent";
+import dynamic from "next/dynamic";
 
-export default async function PostContent({ post }: { post: Post }) {
+const MDXContent = dynamic(() => import("@/components/mdx/MDXContent"), {
+  ssr: false,
+  loading: () => <div>로딩 중...</div>,
+});
+
+export default function PostContent({ post }: { post: Post }) {
   return (
     <article className="flex flex-col w-full gap-3">
       <div className="flex flex-col">
