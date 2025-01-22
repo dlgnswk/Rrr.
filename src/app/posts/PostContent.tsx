@@ -3,11 +3,11 @@
 import { Separator } from "@/components/ui/separator";
 import Profile from "@/components/posts/[slug]/profile";
 import { Post } from "@/types/posts";
-import { MDXRemote } from "next-mdx-remote";
+import MDXContent from "@/components/mdx/MDXContent";
 
 export default function PostContent({ post }: { post: Post }) {
   return (
-    <article className="flex flex-col w-full gap-3">
+    <article className="flex flex-col w-full gap-3 mb-[100px]">
       <div className="flex flex-col">
         <h1 className="text-5xl break-keep">
           <span className="font-bold">{post.titleStyle.bold}</span>
@@ -34,9 +34,7 @@ export default function PostContent({ post }: { post: Post }) {
         </div>
         <Separator className="my-6 bg-black" />
       </div>
-      <div className="prose prose-slate prose-h1:text-4xl prose-h2:text-3xl max-w-none">
-        <MDXRemote {...post.content} />
-      </div>
+      <MDXContent source={post.content} />
     </article>
   );
 }
