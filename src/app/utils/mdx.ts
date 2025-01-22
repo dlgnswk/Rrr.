@@ -4,30 +4,41 @@ import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
 import { Post } from "@/types/posts";
+import { serialize } from "next-mdx-remote/serialize";
+import rehypePrism from "rehype-prism-plus";
+import rehypeSlug from "rehype-slug";
 
 const postsDirectory = path.join(process.cwd(), "src/posts");
 
 export async function getAllPosts(): Promise<Post[]> {
   const slugs = fs.readdirSync(postsDirectory);
 
-  const posts = slugs
-    .map((slug) => {
+  const posts = await Promise.all(
+    slugs.map(async (slug) => {
       const fullPath = path.join(postsDirectory, slug, "index.mdx");
       const fileContents = fs.readFileSync(fullPath, "utf8");
       const { data, content } = matter(fileContents);
 
+      const mdxSource = await serialize(content, {
+        parseFrontmatter: true,
+        mdxOptions: {
+          remarkPlugins: [],
+          rehypePlugins: [rehypePrism, rehypeSlug],
+        },
+      });
+
       return {
         slug,
         ...data,
-        content,
+        content: mdxSource,
       } as Post;
     })
-    .sort(
-      (a, b) =>
-        new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
-    );
+  );
 
-  return posts;
+  return posts.sort(
+    (a, b) =>
+      new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
+  );
 }
 
 export async function getPostBySlug(slug: string): Promise<Post | undefined> {
@@ -36,10 +47,19 @@ export async function getPostBySlug(slug: string): Promise<Post | undefined> {
     const fileContents = fs.readFileSync(fullPath, "utf8");
     const { data, content } = matter(fileContents);
 
+    // MDX 컨텐츠를 직렬화
+    const mdxSource = await serialize(content, {
+      parseFrontmatter: true,
+      mdxOptions: {
+        remarkPlugins: [],
+        rehypePlugins: [rehypePrism, rehypeSlug],
+      },
+    });
+
     return {
       slug,
       ...data,
-      content,
+      content: mdxSource,
     } as Post;
   } catch {
     return undefined;
