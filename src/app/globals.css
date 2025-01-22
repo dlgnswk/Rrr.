@@ -186,3 +186,42 @@ body[data-theme="dune"] {
   background-color: #ff8c39;
   color: #2f2f2f;
 }
+
+.prose {
+  @apply text-gray-900;
+
+  & h1 {
+    @apply text-4xl font-bold mb-1;
+  }
+  & h2 {
+    @apply text-3xl font-bold mb-1;
+  }
+
+  & ul {
+    @apply list-disc pl-5 my-0;
+    & ::marker {
+      @apply text-black;
+    }
+  }
+  & ol {
+    @apply list-decimal pl-5 my-4;
+    & ::marker {
+      @apply text-black;
+    }
+  }
+  & li {
+    @apply my-0;
+  }
+
+  & a {
+    @apply hover:underline;
+  }
+
+  & :not(pre) > code {
+    @apply bg-gray-100 text-black px-1.5 py-0.5 rounded-md font-mono text-sm;
+    &::before,
+    &::after {
+      display: none;
+    }
+  }
+}
