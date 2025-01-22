@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { ThemeProvider } from "./themeProvider";
-import { ThemeDial } from "./themeDial";
+// import { ThemeDial } from "./themeDial";
 
 export function ThemeWrapper({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -17,7 +17,7 @@ export function ThemeWrapper({ children }: { children: React.ReactNode }) {
       disableTransitionOnChange
       forcedTheme={isWritePage ? "light" : undefined}
     >
-      {!isWritePage && <ThemeDial />}
+      {/* <ThemeDial /> */}
       {children}
     </ThemeProvider>
   );
