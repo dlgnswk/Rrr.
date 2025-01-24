@@ -11,7 +11,7 @@ const MDXContent = dynamic(() => import("@/components/mdx/MDXContent"), {
 
 export default function PostContent({ post }: { post: Post }) {
   return (
-    <article className="flex flex-col w-full gap-3">
+    <article className="flex flex-col w-full gap-3 mb-[100px]">
       <div className="flex flex-col">
         <h1 className="text-5xl break-keep">
           <span className="font-bold">{post.titleStyle.bold}</span>
