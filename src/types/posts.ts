@@ -22,4 +22,5 @@ export interface Post {
   updatedAt: string;
   keywords: string[];
   content: MDXRemoteSerializeResult;
+  isPublished: boolean;
 }
