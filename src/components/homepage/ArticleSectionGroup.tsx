@@ -10,16 +10,19 @@ export default function ArticleSectionGroup({
   posts,
 }: ArticleSectionGroupProps) {
   return (
-    <>
+    <div>
       {posts.length > 0 ? (
-        posts.map((post, index) => (
-          <Link href={`/posts/${post.slug}`} key={post.slug}>
-            <ArticleSection post={post} index={index} posts={posts} />
-          </Link>
-        ))
+        posts.map(
+          (post, index) =>
+            post.isPublished && (
+              <Link href={`/posts/${post.slug}`} key={post.slug}>
+                <ArticleSection post={post} index={index} posts={posts} />
+              </Link>
+            )
+        )
       ) : (
         <div>데이터가 없습니다.</div>
       )}
-    </>
+    </div>
   );
 }
