@@ -10,9 +10,9 @@ const MainButton = () => {
   };
 
   return (
-    <div className="flex w-full my-1 items-center">
+    <div className="flex w-full pt-4 pb-2 items-center fixed bg-[#73BBE7]">
       <button
-        className="text-[40px] font-honerThose w-fit cursor-pointer"
+        className="flex items-center text-[40px] h-[40px] font-honerThose w-fit cursor-pointer"
         onClick={handleClick}
       >
         Rrr.
