@@ -2,6 +2,7 @@ import HomepageTitle from "@/components/homepage/HomepageTitle";
 import PostpageLayout from "@/components/posts/PostpageLayout";
 import PostContent from "../PostContent";
 import { getAllPosts } from "@/app/utils/mdx";
+import MainButton from "@/components/posts/[slug]/MainButton";
 
 type Params = Promise<{ slug: string }>;
 
@@ -16,7 +17,7 @@ export default async function PostPage({ params }: { params: Params }) {
 
   return (
     <PostpageLayout>
-      <HomepageTitle />
+      <MainButton />
       <PostContent post={post} />
     </PostpageLayout>
   );
