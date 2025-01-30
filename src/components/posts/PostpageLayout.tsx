@@ -4,7 +4,7 @@ export default function PostpageLayout({
   children: React.ReactNode;
 }) {
   return (
-    <main className="px-5 md:mx-auto w-full md:w-[80%] lg:w-[70%] xl:w-[60%] min-h-screen flex flex-col">
+    <main className="px-6 mx-auto w-full max-w-[700px] min-h-screen flex flex-col">
       {children}
     </main>
   );
