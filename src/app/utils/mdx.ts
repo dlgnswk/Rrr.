@@ -5,8 +5,13 @@ import path from "path";
 import matter from "gray-matter";
 import { Post } from "@/types/posts";
 import { serialize } from "next-mdx-remote/serialize";
-import rehypePrism from "rehype-prism-plus";
-import rehypeSlug from "rehype-slug";
+import remarkGfm from "remark-gfm";
+import rehypePrettyCode from "rehype-pretty-code";
+
+const rehypeOptions = {
+  theme: "github-dark",
+  keepBackground: true,
+};
 
 const postsDirectory = path.join(process.cwd(), "src/posts");
 
@@ -22,8 +27,8 @@ export async function getAllPosts(): Promise<Post[]> {
       const mdxSource = await serialize(content, {
         parseFrontmatter: true,
         mdxOptions: {
-          remarkPlugins: [],
-          rehypePlugins: [rehypePrism, rehypeSlug],
+          remarkPlugins: [remarkGfm],
+          rehypePlugins: [[rehypePrettyCode, rehypeOptions]],
         },
       });
 
@@ -47,12 +52,11 @@ export async function getPostBySlug(slug: string): Promise<Post | undefined> {
     const fileContents = fs.readFileSync(fullPath, "utf8");
     const { data, content } = matter(fileContents);
 
-    // MDX 컨텐츠를 직렬화
     const mdxSource = await serialize(content, {
       parseFrontmatter: true,
       mdxOptions: {
-        remarkPlugins: [],
-        rehypePlugins: [rehypePrism, rehypeSlug],
+        remarkPlugins: [remarkGfm],
+        rehypePlugins: [[rehypePrettyCode, rehypeOptions]],
       },
     });
 
