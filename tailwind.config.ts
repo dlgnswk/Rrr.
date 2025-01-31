@@ -18,7 +18,7 @@ const config = {
       colors: {
         skyblue: {
           background: "#74BDE8",
-          text: "#333d4b",
+          text: "#000000",
         },
         dune: {
           background: "#FF8C39",
@@ -97,6 +97,13 @@ const config = {
       screens: {
         "main-hover": {
           raw: "(hover: hover)",
+        },
+      },
+      typography: {
+        DEFAULT: {
+          css: {
+            "--tw-prose-body": "#000000",
+          },
         },
       },
     },

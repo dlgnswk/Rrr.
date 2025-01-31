@@ -14,7 +14,7 @@ export default function PostContent({ post }: { post: Post }) {
   return (
     <article className="flex flex-col w-full gap-3 mb-[100px] mt-8">
       <div className="flex flex-col gap-3">
-        <h1 className="text-5xl text-[#222a34] break-keep">
+        <h1 className="text-5xl break-keep">
           <span className="font-bold">{post.titleStyle.bold}</span>
           {post.titleStyle.rest}
         </h1>

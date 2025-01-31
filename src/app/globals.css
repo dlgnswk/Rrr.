@@ -112,7 +112,7 @@ body {
 
 body[data-theme="skyblue"] {
   background-color: #74bde8;
-  color: #333d4b;
+  color: #000000;
 }
 
 body[data-theme="forest"] {
@@ -131,11 +131,10 @@ body[data-theme="dune"] {
 }
 
 .prose {
-  --tw-prose-headings: #333d4b;
+  /* --tw-prose-headings: #333d4b; */
 
   & h1 {
     @apply text-4xl font-bold mb-1;
-    color: var(--tw-prose-headings);
   }
   & h2 {
     @apply text-3xl font-bold mb-1;
@@ -143,15 +142,9 @@ body[data-theme="dune"] {
 
   & ul {
     @apply list-disc pl-5 my-0;
-    & ::marker {
-      @apply text-[#333d4b];
-    }
   }
   & ol {
     @apply list-decimal pl-5 my-4;
-    & ::marker {
-      @apply text-[#333d4b];
-    }
   }
   & li {
     @apply my-0;
@@ -162,7 +155,7 @@ body[data-theme="dune"] {
   }
 
   & :not(pre) > code {
-    @apply border border-[rgba(244,248,255,1)] bg-[rgba(244,248,255,0.7)] text-[#333d4b] px-1 py-0.5 rounded-[6px] font-normal font-mono text-sm;
+    @apply border border-[rgba(244,248,255,1)] bg-[rgba(244,248,255,0.7)] px-1 py-0.5 rounded-[6px] font-normal font-mono text-sm;
     &::before,
     &::after {
       display: none;
