@@ -6,7 +6,7 @@ import { Suspense } from "react";
 
 function MDXRenderer({ source }: { source: MDXRemoteSerializeResult }) {
   return (
-    <div className="prose prose-slate prose-h1:text-4xl prose-h2:text-3xl max-w-none mt-[60px]">
+    <div className="prose prose-h1:text-4xl prose-h2:text-3xl max-w-none mt-[60px]">
       <MDXRemote {...source} />
     </div>
   );
