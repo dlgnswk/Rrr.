@@ -142,12 +142,21 @@ body[data-theme="dune"] {
 
   & ul {
     @apply list-disc pl-5 my-0;
+    & ::marker {
+      @apply text-black;
+    }
   }
   & ol {
     @apply list-decimal pl-5 my-4;
+    & ::marker {
+      @apply text-black;
+    }
   }
   & li {
     @apply my-0;
+    & ::marker {
+      @apply text-black;
+    }
   }
 
   & a {
@@ -160,6 +169,10 @@ body[data-theme="dune"] {
     &::after {
       display: none;
     }
+  }
+
+  & blockquote {
+    @apply pl-4 border-l-4 border-black my-4;
   }
 }
 
