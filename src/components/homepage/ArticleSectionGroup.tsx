@@ -9,19 +9,20 @@ interface ArticleSectionGroupProps {
 export default function ArticleSectionGroup({
   posts,
 }: ArticleSectionGroupProps) {
+  const publishedPosts = posts.filter((post) => post.isPublished);
+
   return (
     <div>
-      {posts.length > 0 ? (
-        posts.map(
-          (post, index) =>
-            post.isPublished && (
-              <Link href={`/posts/${post.slug}`} key={post.slug}>
-                <ArticleSection post={post} index={index} posts={posts} />
-              </Link>
-            )
-        )
+      {publishedPosts.length > 0 ? (
+        publishedPosts.map((post, index) => (
+          <Link href={`/posts/${post.slug}`} key={post.slug}>
+            <ArticleSection post={post} index={index} posts={publishedPosts} />
+          </Link>
+        ))
       ) : (
-        <div>데이터가 없습니다.</div>
+        <div className="w-full text-2xl">
+          작성된 글이 없어요, 조금만 기다려주세요!
+        </div>
       )}
     </div>
   );
