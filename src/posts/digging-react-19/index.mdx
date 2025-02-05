@@ -1,0 +1,33 @@
+---
+title: "React 19에서 새로워진 것들"
+titleStyle: { bold: "React 19", rest: "에서 새로워진 것들" }
+description: "React 19에서 새로워진 것들을 알아보아요!"
+category: "frontend"
+tags: ["React", "React 19"]
+publishedAt: "2025년 2월 5일"
+updatedAt: "2025년 2월 5일"
+keywords: ["React", "React 19"]
+isPublished: false
+---
+
+React 19는 2024년 12월에 정식으로 `npm`에 릴리즈 됐어요.
+React 공식 홈페이지를 통해 무엇이 새로워진건지 알아볼게요!
+
+### React 19에서 새로워진 것들
+
+#### Actions
+
+그동안 리액트에서는 데이터가 변형(mutation)되면 그 응답을 받아 상태를 업데이트를 하는 방식으로 사용되어왔어요.
+응답받은 결과로 보류, 오류, 정상적 상태 등의 여러 응답이 있을 수 있는 경우 이후의 요청을 수동으로 지정해야만 했어요.
+
+그 예시로 위시리스트를 저장해놓은 데이터를 수정해 볼게요.
+
+```typescript
+function UpdateWishlist({}: any) {
+	const [item, setItem] = useState(“”);
+}
+```
+
+## 출처
+
+[What's New in React 19](https://ko.react.dev/blog/2024/12/05/react-19#whats-new-in-react-19)
