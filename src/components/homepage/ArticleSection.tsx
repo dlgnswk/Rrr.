@@ -17,8 +17,11 @@ export default function ArticleSection({
     <section className="flex flex-col w-full gap-3 cursor-pointer">
       <div className="flex justify-between items-end gap-8">
         <h1 className="text-5xl break-keep">
-          <span className="font-bold">{post.titleStyle.bold}</span>
-          {post.titleStyle.rest}
+          {post.titleStyle.map((part, index) => (
+            <span key={index} className={part.isBold ? "font-bold" : ""}>
+              {part.text}
+            </span>
+          ))}
         </h1>
         <div className="text-foreground">
           <Arrow />
