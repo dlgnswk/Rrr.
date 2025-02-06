@@ -189,3 +189,55 @@ code {
   display: block;
   width: 100%;
 }
+
+.callout {
+  margin: 0.5rem 0;
+  padding: 1rem 1.5rem !important;
+  border-radius: 0.5rem;
+  border: 0px solid !important;
+}
+
+.callout-title {
+  background-color: transparent !important;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.callout-title p {
+  margin: 0;
+  display: inline;
+}
+
+.callout-title strong {
+  display: flex;
+  align-items: center;
+  quotes: none;
+  font-weight: 700;
+}
+
+.callout-content {
+  quotes: none;
+}
+
+.callout-content::before,
+.callout-content::after {
+  content: none;
+}
+
+.callout-content p {
+  margin-top: 0.5rem;
+  margin-bottom: 0;
+}
+
+blockquote:has(> .note:first-child) {
+  background-color: #f0f9ff;
+}
+
+blockquote:has(> .warning:first-child) {
+  background-color: #fffbeb;
+}
+
+blockquote:has(> .tip:first-child) {
+  background-color: #ecfdf5;
+}
