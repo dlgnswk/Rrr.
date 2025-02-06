@@ -1,0 +1,45 @@
+---
+title: "새로운 React 19, useActionState"
+titleStyle:
+  - text: "새로운 React 19, "
+    isBold: false
+  - text: "useActionState"
+    isBold: true
+description: "새롭게 도입된 useActionState를 알아볼게요."
+category: "frontend"
+tags: ["React", "React 19"]
+publishedAt: "2025년 2월 6일"
+updatedAt: "2025년 2월 6일"
+keywords: ["React", "React 19"]
+isPublished: true
+---
+
+# React 19에서 새로워진 것들
+
+## Actions
+
+그동안 리액트에서는 데이터가 변형(mutation)되면 그 응답을 받아 상태를 업데이트 하는 방식으로 사용되어왔어요.
+응답받은 결과가 보류, 오류, 정상적 상태 등의 여러 응답이 있을 수 있어 이후의 요청을 수동으로 처리해야 했어요.
+
+그 예제로 `useState`로 처리중인 상태와 에러 상태를 처리하는 코드를 살펴볼게요.
+
+```tsx
+function UpdateWishlist() {
+  const [item, setItem] = useState<string>("");
+  const [error, setError] = useState<Error | null>(null);
+  const [isPending, setIsPending] = useState<boolean>(false);
+
+  const handleSubmit = async () => {
+    setIsPending(true); // 요청 보내기 시작
+
+    const error = await updateWishlist(item); // 위시리스트 업데이트 요청
+    setIsPending(false); // 요청 완료
+```
+
+- 테마 지원
+- 다양한 컴포넌트
+- 등등...
+
+## 출처
+
+[shadcn/ui](https://ui.shadcn.com/)
