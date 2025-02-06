@@ -1,9 +1,9 @@
 ---
-title: "React 19에서 새로워진 것들"
-titleStyle: { bold: "React 19", rest: "에서 새로워진 것들" }
-description: "React 19에서 새로워진 것들을 알아보아요!"
+title: "새로운 React 19, useTransition"
+titleStyle: { rest: "새로운 React 19,", bold: "useTransition" }
+description: "React 19에서 새로워진 useTransition을 알아볼게요."
 category: "frontend"
-tags: ["React", "React 19"]
+tags: ["React", "React 19", "useTransition"]
 publishedAt: "2025년 2월 5일"
 updatedAt: "2025년 2월 5일"
 keywords: ["React", "React 19"]
@@ -11,11 +11,11 @@ isPublished: true
 ---
 
 2024년 12월 5일, React 19가 `npm`에 정식으로 릴리즈 됐어요.
-무엇이 바뀌었는지 React 공식 홈페이지를 통해 알아볼게요.
+React 공식 홈페이지에 소개된 [What's New in React 19](https://ko.react.dev/blog/2024/12/05/react-19#whats-new-in-react-19)를 통해 바뀐점을 하나씩 알아볼게요.
 
-### React 19에서 새로워진 것들
+# React 19에서 새로워진 것들
 
-#### Actions
+## Actions
 
 그동안 리액트에서는 데이터가 변형(mutation)되면 그 응답을 받아 상태를 업데이트 하는 방식으로 사용되어왔어요.
 응답받은 결과가 보류, 오류, 정상적 상태 등의 여러 응답이 있을 수 있어 이후의 요청을 수동으로 처리해야 했어요.
@@ -60,6 +60,8 @@ function UpdateWishlist() {
 리액트 19에서는 이러한 응답 상태를 자동으로 처리할 수 있는 `Actions`가 도입되었어요.
 `useTransition`을 통한 예시를 통해 살펴 볼게요.
 
+## useTransition
+
 > [!note] useTransition?
 > 리액트 18에서 도입된 `useTransition`은 여러 상태 업데이트가 UI 변경을 유발하게 될 때 우선순위를 가지게 해요. 무거운 UI 업데이트를 유발하는 상태를 `startTransition`에 넣어 리액트에게 후순위(백그라운드)로 처리하라고 알려줘 반응성을 향상 시키는 훅이에요.
 
@@ -96,6 +98,32 @@ function UpdateWishlist() {
 ```
 
 이렇게 `useTransition`은 비동기 함수가 요청을 수행하는 동안 UI와 상호작용하게 만들 수 있어요.
+또한 리액트 팀은 `startTransition` 내부에서 사용되는 모든 콜백함수를 `Actions`로 부르는 컨벤션을 제안해요.
+
+```tsx
+const handleSubmit = () => {
+  startTransition(() => {
+    submitAction(); // Action 컨벤션
+  });
+};
+```
+
+이렇게 할 수 있을거 같네요.
+
+이러한 `action`은 데이터 제출을 자동으로 관리해주는 기능도 제공하게 됐어요.
+
+- 대기 상태, `pending state`:
+  요청이 시작될 때 `isPending` 을 통해 대기상태를 제공하고, 상태가 커밋될때 초기화 돼요.
+- 낙관적인 업데이트, `optimistic updates`:
+  새로운 `useOptimistic` 훅을 통해 요청이 제출되는 동안 사용자에게 피드백 제공할 수 있어요.
+- 에처 처리 `error handling`:
+  이제 에러 처리를 제공하고 요청이 실패했을 때 에러 바운더리를 표시할 수 있게 됐어요.
+- 폼, `form`:
+  `<form>` 엘리먼트는 이제 `action`, `formAction` props에 함수를 전달할 수 있어요.
+  `action` props에 전달한 함수, `Actions`를 통해 제출 후 폼을 자동으로 초기화해요.
+
+리액트 19에서는 `Actions`가 중요한 개념으로 사용되었어요.
+`Actions`와 관련된 새로운 기능들은 다음 포스트에서 더 자세히 알아볼게요.
 
 ## 출처
 
