@@ -10,23 +10,93 @@ keywords: ["React", "React 19"]
 isPublished: false
 ---
 
-React 19는 2024년 12월에 정식으로 `npm`에 릴리즈 됐어요.
-React 공식 홈페이지를 통해 무엇이 새로워진건지 알아볼게요!
+2024년 12월 5일, React 19가 `npm`에 정식으로 릴리즈 됐어요.
+무엇이 바뀌었는지 React 공식 홈페이지를 통해 알아볼게요.
 
 ### React 19에서 새로워진 것들
 
 #### Actions
 
-그동안 리액트에서는 데이터가 변형(mutation)되면 그 응답을 받아 상태를 업데이트를 하는 방식으로 사용되어왔어요.
-응답받은 결과로 보류, 오류, 정상적 상태 등의 여러 응답이 있을 수 있는 경우 이후의 요청을 수동으로 지정해야만 했어요.
+그동안 리액트에서는 데이터가 변형(mutation)되면 그 응답을 받아 상태를 업데이트 하는 방식으로 사용되어왔어요.
+응답받은 결과가 보류, 오류, 정상적 상태 등의 여러 응답이 있을 수 있어 이후의 요청을 수동으로 처리해야 했어요.
 
-그 예시로 위시리스트를 저장해놓은 데이터를 수정해 볼게요.
+그 예제로 `useState`로 처리중인 상태와 에러 상태를 처리하는 코드를 살펴볼게요.
 
-```typescript
-function UpdateWishlist({}: any) {
-	const [item, setItem] = useState(“”);
+```tsx
+function UpdateWishlist() {
+  const [item, setItem] = useState<string>("");
+  const [error, setError] = useState<Error | null>(null);
+  const [isPending, setIsPending] = useState<boolean>(false);
+
+  const handleSubmit = async () => {
+    setIsPending(true); // 요청 보내기 시작
+
+    const error = await updateWishlist(item); // 위시리스트 업데이트 요청
+    setIsPending(false); // 요청 완료
+
+    if (error) {
+      // 에러가 있는 경우 (null이 아닌 경우)
+      setError(error);
+      return;
+    }
+
+    redirect("/path"); // 에러가 없는 경우
+  };
+
+  return (
+    <div>
+      <input value={item} onChange={(e) => setItem(e.target.value)} />
+      <button onClick={handleSubmit} disabled={isPending}>
+        위시리스트 업데이트
+      </button>
+      {error && <p>{error}</p>} // 에러 메세지 표시
+    </div>
+  );
 }
 ```
+
+이러한 방식으로 에러인 경우와 아닌 경우를 수동으로 분기처리 해야 했어요.
+
+리액트 19에서는 이러한 응답 상태를 자동으로 처리할 수 있는 `Actions`가 도입되었어요.
+`useTransition`을 통한 예시를 통해 살펴 볼게요.
+
+:::note useTransition?
+리액트 18에서 도입된 `useTransition`은 여러 상태 업데이트가 UI 변경을 유발하게 될 때 우선순위를 가지게 해요. 무거운 UI 업데이트를 유발하는 상태를 `startTransition`에 넣어 리액트에게 후순위(백그라운드)로 처리하라고 알려줘 반응성을 향상 시키는 훅이에요.
+:::
+
+```tsx
+function UpdateWishlist() {
+  const [item, setItem] = useState<string>("");
+  const [error, setError] = useState<Error | null>(null);
+  const [isPending, startTransition] = useTransition();
+
+  const handleSubmit = async () => {
+    startTransition(async () => {
+      // 리액트 19부터는 startTransition은 비동기 액션을 지원해요.
+      const error = await updateWishlist(item);
+
+      if (error) {
+        setError(error); // error state 업데이트를 후순위로 처리
+        return;
+      }
+
+      redirect("/path");
+    });
+  };
+
+  return (
+    <div>
+      <input value={item} onChange={(e) => setItem(e.target.value)} />
+      <button onClick={handleSubmit} disabled={isPending}>
+        위시리스트 업데이트
+      </button>
+      {error && <p>{error}</p>} // 에러 메세지 표시
+    </div>
+  );
+}
+```
+
+이렇게 `useTransition`은 비동기 함수가 요청을 수행하는 동안 UI와 상호작용하게 만들 수 있어요.
 
 ## 출처
 
