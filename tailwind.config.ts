@@ -86,7 +86,7 @@ const config = {
         freesentation: ["var(--font-freesentation)"],
       },
       fontSize: {
-        title: "150px",
+        title: "130px",
         mobileTitle: "100px",
       },
       borderRadius: {
