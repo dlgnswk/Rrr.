@@ -32,9 +32,9 @@ export default function RootLayout({
         className={`${honerThose.variable} ${freesentation.variable} antialiased min-h-screen w-screen`}
         suppressHydrationWarning
       >
-        <ThemeWrapper>
-          <Providers>{children}</Providers>
-        </ThemeWrapper>
+        {/* <ThemeWrapper> */}
+        <Providers>{children}</Providers>
+        {/* </ThemeWrapper> */}
       </body>
     </html>
   );
