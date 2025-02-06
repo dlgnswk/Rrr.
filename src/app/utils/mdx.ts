@@ -7,6 +7,7 @@ import { Post } from "@/types/posts";
 import { serialize } from "next-mdx-remote/serialize";
 import remarkGfm from "remark-gfm";
 import rehypePrettyCode from "rehype-pretty-code";
+import remarkCallouts from "remark-callouts";
 
 const rehypeOptions = {
   theme: "github-dark",
@@ -27,7 +28,7 @@ export async function getAllPosts(): Promise<Post[]> {
       const mdxSource = await serialize(content, {
         parseFrontmatter: true,
         mdxOptions: {
-          remarkPlugins: [remarkGfm],
+          remarkPlugins: [remarkGfm, remarkCallouts],
           rehypePlugins: [[rehypePrettyCode, rehypeOptions]],
         },
       });
@@ -55,7 +56,7 @@ export async function getPostBySlug(slug: string): Promise<Post | undefined> {
     const mdxSource = await serialize(content, {
       parseFrontmatter: true,
       mdxOptions: {
-        remarkPlugins: [remarkGfm],
+        remarkPlugins: [remarkGfm, remarkCallouts],
         rehypePlugins: [[rehypePrettyCode, rehypeOptions]],
       },
     });
