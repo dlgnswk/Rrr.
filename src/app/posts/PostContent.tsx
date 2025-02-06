@@ -1,7 +1,6 @@
 "use client";
 
 import Profile from "@/components/posts/[slug]/profile";
-import { Separator } from "@/components/ui/separator";
 import { Post } from "@/types/posts";
 import dynamic from "next/dynamic";
 
@@ -15,8 +14,11 @@ export default function PostContent({ post }: { post: Post }) {
     <article className="flex flex-col w-full gap-3 mb-[100px] mt-8">
       <div className="flex flex-col gap-3">
         <h1 className="text-5xl break-keep">
-          <span className="font-bold">{post.titleStyle.bold}</span>
-          {post.titleStyle.rest}
+          {post.titleStyle.map((part, index) => (
+            <span key={index} className={part.isBold ? "font-bold" : ""}>
+              {part.text}
+            </span>
+          ))}
         </h1>
         <div className="flex items-center gap-2 mt-1">
           <div className="w-[36px] h-[36px] text-foreground">
