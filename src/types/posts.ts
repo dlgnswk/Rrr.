@@ -11,10 +11,15 @@ export const postTags = [
   "shadcn",
 ] as const;
 
+interface TitleStyle {
+  text: string;
+  isBold: boolean;
+}
+
 export interface Post {
   slug: string;
   title: string;
-  titleStyle: { bold: string; rest: string };
+  titleStyle: TitleStyle[];
   description: string;
   category: (typeof postCategories)[number];
   tags: (typeof postTags)[number][];
