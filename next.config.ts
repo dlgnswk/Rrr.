@@ -10,6 +10,7 @@ const rehypeOptions = {
 };
 
 const nextConfig = {
+  analytics: true,
   pageExtensions: ["js", "jsx", "ts", "tsx", "md", "mdx"],
 };
 
