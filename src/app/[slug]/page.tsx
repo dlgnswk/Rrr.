@@ -1,8 +1,8 @@
 import HomepageTitle from "@/components/homepage/HomepageTitle";
-import PostpageLayout from "@/components/posts/PostpageLayout";
-import PostContent from "../PostContent";
+import PostpageLayout from "@/components/[slug]/PostpageLayout";
+import PostContent from "@/app/[slug]/PostContent";
 import { getAllPosts } from "@/app/utils/mdx";
-import MainButton from "@/components/posts/[slug]/MainButton";
+import MainButton from "@/components/[slug]/MainButton";
 
 type Params = Promise<{ slug: string }>;
 

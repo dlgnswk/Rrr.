@@ -1,6 +1,6 @@
 "use client";
 
-import Profile from "@/components/posts/[slug]/profile";
+import Profile from "@/components/[slug]/profile";
 import { Post } from "@/types/posts";
 import dynamic from "next/dynamic";
 
