@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { Providers } from "./Providers";
-import { ThemeWrapper } from "./themeWrapper";
 
 const honerThose = localFont({
   src: "./fonts/honer-those.otf",
@@ -32,9 +31,7 @@ export default function RootLayout({
         className={`${honerThose.variable} ${freesentation.variable} antialiased min-h-screen w-screen`}
         suppressHydrationWarning
       >
-        {/* <ThemeWrapper> */}
         <Providers>{children}</Providers>
-        {/* </ThemeWrapper> */}
       </body>
     </html>
   );
