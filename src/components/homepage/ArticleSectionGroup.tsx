@@ -15,7 +15,7 @@ export default function ArticleSectionGroup({
     <div>
       {publishedPosts.length > 0 ? (
         publishedPosts.map((post, index) => (
-          <Link href={`/posts/${post.slug}`} key={post.slug}>
+          <Link href={`/${post.slug}`} key={post.slug}>
             <ArticleSection post={post} index={index} posts={publishedPosts} />
           </Link>
         ))
