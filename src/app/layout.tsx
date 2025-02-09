@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { Providers } from "./Providers";
+import { Analytics } from "@vercel/analytics/react";
 
 const honerThose = localFont({
   src: "./fonts/honer-those.otf",
@@ -32,6 +33,7 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <Providers>{children}</Providers>
+        <Analytics />
       </body>
     </html>
   );
