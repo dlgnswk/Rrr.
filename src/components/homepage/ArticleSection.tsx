@@ -16,7 +16,7 @@ export default function ArticleSection({
   return (
     <section className="flex flex-col w-full gap-3 cursor-pointer">
       <div className="flex justify-between items-end gap-8">
-        <h1 className="text-5xl break-keep">
+        <h1 className="text-5xl break-keep leading-[3.5rem]">
           {post.titleStyle.map((part, index) => (
             <span key={index} className={part.isBold ? "font-bold" : ""}>
               {part.text}
