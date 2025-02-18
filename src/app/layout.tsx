@@ -6,14 +6,18 @@ import { Analytics } from "@vercel/analytics/react";
 
 const honerThose = localFont({
   src: "./fonts/honer-those.otf",
+  display: "swap",
   variable: "--font-honer-those",
   weight: "400",
+  preload: true,
 });
 
 const freesentation = localFont({
   src: "./fonts/FreesentationVF.ttf",
+  display: "swap",
   variable: "--font-freesentation",
   weight: "100 200 300 400 500 600 700 800 900",
+  preload: true,
 });
 
 export const metadata: Metadata = {
