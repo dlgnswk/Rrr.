@@ -172,7 +172,16 @@ body[data-theme="dune"] {
   }
 
   & blockquote {
-    @apply pl-4 border-l-4 border-black my-4;
+    @apply pl-4 border-l-4 border-black;
+
+    & > p:first-of-type::before,
+    & > p:first-of-type::after {
+      content: none;
+    }
+  }
+
+  & blockquote > p:first-of-type {
+    @apply my-0;
   }
 }
 
