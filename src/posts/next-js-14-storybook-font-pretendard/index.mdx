@@ -217,75 +217,22 @@ export default function RootLayout() {
 저는 컴포넌트 문서화를 위해 Storybook을 사용하고 있는데,
 페이지에 적용된 폰트를 Storybook에서도 확인할 수 있도록 폰트를 추가해 볼게요.
 
-Storybook도 Next.js 환경에서 실행되기 때문에 마찬가지로 폰트를 사용할 수 있도록 `localFont`를 통해 `variable`로 등록해야 해요.
+Storybook에서는 next/font를 사용해서 폰트를 사용할 수 있다고 설명하고 있어요.
+저는 [이 방법](https://storybook.js.org/docs/get-started/frameworks/nextjs#nextjs-font-optimization)으로 폰트가 적용되지 않아서 다른 방법으로 적용해보았어요.
+(아마 Next.js의 localFont 함수가 Storybook 빌드 중에 제대로 동작하지 않는것 같은데 조금 더 찾아볼게요..)
 
-앞으로 폰트를 추가할 때마다 `localFont`를 각각 등록해줘야 하기 때문에 `const pretendard = localFont({})`를 분리해 재사용하고 폰트들을 모아서 관리할 수 있도록 분리해볼게요.
+그래서 저는 `.storybook/fonts.css`를 만들어 `@font-face`를 추가하고 `tailwind.config.ts` 에 등록해서 사용했어요.
 
-```tsx
-// app/fonts.ts
-import localFont from "next/font/local";
-
-export const pretendard = localFont({
-  src: "../public/fonts/PretendardVariable.woff2",
-  display: "swap",
-  weight: "45 920",
-  variable: "--font-pretendard",
-});
-
-// 폰트 추가시 하위에 작성
-// ...
-```
-
-앞에서 작성한 `app/layout.tsx`도 이렇게 변경할 수 있어요.
-
-```tsx
-import { pretendard } from "./fonts";
-
-export default function RootLayout() {
-  return (
-    <html lang="kr" className={`${pretendard.variable} font-pretendard`}>
-      <body>{children}</body>
-    </html>
-  );
+```css
+@font-face {
+  font-family: "PretendardVariable";
+  src: url("/fonts/PretendardVariable.woff2") format("woff2");
+  font-weight: 45 920;
+  font-display: swap;
 }
 ```
 
-`.storybook/preview.ts`는 작성한 스토리 파일들에 대한 전역 설정을 정의하는 파일이에요.
-`preview.ts`의 여러 속성들 중 `decorators`는 렌더링 될 스토리를 감싸 스타일이나 레이아웃을 적용할 수 있어요.
-
-```tsx
-import React from "react";
-import type { Preview } from "@storybook/react";
-import { pretendard } from "../app/fonts";
-import "../app/globals.css";
-
-const preview: Preview = {
-  parameters: {
-    controls: {
-      matchers: {
-        color: /(background|color)$/i,
-        date: /Date$/i,
-      },
-    },
-    // ...
-  },
-  decorators: [
-    (Story) => (
-      <div className={`${pretendard.variable} font-pretendard`}>
-        <Story />
-      </div>
-    ),
-  ],
-};
-
-export default preview;
-```
-
-`layout.tsx`와 동일한 방법으로 `font-pretendard`를 적용했어요.
-
-이렇게 적용했다면 아마 에러가 발생할거에요, 그 이유는 `decorators`를 통해 컴포넌트를 반환하기 때문에 `preview.ts`를 `preview.tsx`로 변경해줘야 해요.
-
-이제 `.storybook/main.ts`에서 `staticDirs`를 통해 `local font`가 위치한 디렉토리를 지정할게요.
+이제 `.storybook/main.ts`에서 `staticDirs`를 통해 폰트가 위치한 디렉토리를 지정할게요.
 
 ```typescript
 const config: StorybookConfig = {
@@ -293,16 +240,59 @@ const config: StorybookConfig = {
   staticDirs: [
     {
       from: "../public/fonts",
-      to: "public/fonts",
+      to: "/fonts",
     },
   ],
 };
 ```
 
-`from` 프로퍼티는 `.storybook` 디렉토리를 기준으로 상대 경로이고,
-`to` 프로퍼티는 루트 디렉토리를 기준으로 해요.
+`from` 프로퍼티는 `.storybook` 디렉토리를 기준으로 폰트가 위치한 상대 경로를 말하고,
+`to` 프로퍼티는 해당 디렉토리를 루트로 하겠다는 말이에요.
 
-이렇게 하면 Storybook에도 폰트를 적용할 수 있어요.
+이렇게 설정하게 되면 `http://localhost:6006/fonts/PretendardVariable.woff2` 이경로로 폰트를 가져와요.
+
+이제 `tailwind.config.ts`에서 `font-family`를 등록할게요.
+
+```typescript
+// tailwind.config.ts
+export default {
+	...
+	theme: {
+		extend: {
+			fontFamily: {
+				pretendard: [
+					"var(--font-pretendard)", // Next.js localFont
+					"PretendardVariable", // Storybook
+				],
+			},
+		},
+	},
+	...
+},
+```
+
+위에서 추가했던 `var(--font-pretendard)` 뒤에 `@font-face`로 등록한 `PretendardVariable`을 추가해줄게요.
+
+이렇게하면 폰트가 적용될 줄 알았는데 아직 적용되지 않는 이슈가 있네요.
+위에서 추가했던 `var(--font-pretendard)`가 `localFont`를 통해 폰트를 가져오지 못해서 기본 폰트를 적용하고 `var(--font-pretendard)`를 지우면 `PretendardVariable`이 폰트를 잘 가져오는 것을 확인했어요.
+
+하지만 Next.js 환경에서 `var(--font-pretendard)`를 사용하기 때문에 이원화를 위해 `.storybook/fonts.css`에 다음과 같이 추가해줬어요.
+
+```css
+@font-face {
+  font-family: "PretendardVariable";
+  src: url("/fonts/PretendardVariable.woff2") format("woff2");
+  font-weight: 45 920;
+  font-display: swap;
+}
+
+// 추가
+:root {
+  --font-pretendard: "PretendardVariable";
+}
+```
+
+이렇게 해서 프리텐다드 폰트를 Next.js와 Storybook 모두에 적용할 수 있었어요.
 
 <figure>
   <img
