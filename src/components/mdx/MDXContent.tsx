@@ -3,11 +3,16 @@
 import { MDXRemote } from "next-mdx-remote";
 import type { MDXRemoteSerializeResult } from "next-mdx-remote";
 import { Suspense } from "react";
+import MDXImage from "./MDXImage";
+
+const components = {
+  MDXImage,
+};
 
 function MDXRenderer({ source }: { source: MDXRemoteSerializeResult }) {
   return (
     <div className="prose prose-h1:text-4xl prose-h2:text-3xl max-w-none mt-[60px]">
-      <MDXRemote {...source} />
+      <MDXRemote {...source} components={components} />
     </div>
   );
 }
