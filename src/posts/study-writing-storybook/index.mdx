@@ -1,9 +1,9 @@
 ---
-title: "Storybook을 사용해보자"
+title: "Storybook 간단 사용법"
 titleStyle:
   - text: "Storybook"
     isBold: true
-  - text: "을 사용해보자"
+  - text: "간단 사용법"
     isBold: false
 description: "스토리북의 스토리를 작성하는 방법에 대해 알아봤어요."
 category: "frontend"
@@ -14,9 +14,163 @@ keywords: ["Storybook", "Story"]
 isPublished: false
 ---
 
-최근에 시작한 프로젝트에서 구현하게 될 컴포넌트들에 대해 문서화하기 위해서 Storybook을 도입하게 되었어요.  
-여기저기 찾아보며 알게된 Storybook 사용법에 대해 정리해봤어요. (추후에 내용을 더 추가할게요!🫡)
+이전에 작업했던 프로젝트들에서 구현한 컴포넌트가 많아지면서 관리하기 힘든 이슈가 있었어요.  
+특정 상태의 컴포넌트를 확인하기 위해 매번 여러 단계를 거치거나, 필요한 컴포넌트를 찾기 위해 코드를 읽으면서 시간을 소모하곤 했어요.
 
-## Story 이란?
+최근에 시작한 프로젝트에서는 이러한 불편을 해소하기 위해 Storybook을 통해 컴포넌트 문서화를 시도해보았는데,  
+여기저기 찾아보며 알게된 Storybook의 stories 작성법에 대해 알아봤어요.
+
+## Storybook 이란?
+
+> 각각의 UI와 페이지를 개별적으로 만들어 나가기 위한 프론트엔드 도구입니다.
+> 전체 앱을 실행하지 않아도 구현하기 어려운 상태나 엣지 케이스의 UI와 페이지를 개발하고 공유할 수 있습니다.
+
+위의 글은 [공식문서](https://kyechan99.github.io/post/lib/storybook#args-%EC%82%AC%EC%9A%A9)에 나와있는 Storybook의 소개글을 살짝 의역해본 글이에요.  
+이 소개글만으로도 Storybook이 대략 어떤 도구인지 알 수 있었어요.
+
+Storybook은 크게 네 가지의 핵심기능을 가지고 있는데, 그 기능들은 다음과 같아요.
+
+**1. Stories**  
+Stories(스토리)는 UI 컴포넌트의 렌더링 된 상태를 캡쳐한 것으로 하나의 UI 컴포넌트는 여러 스토리를 가질 수 있어요.  
+또한 각각의 스토리로 컴포넌트의 서로 다른 상태를 확인할 수 있어요.
+
+**2. Docs**  
+스토리와 함께 구현한 컴포넌트 분석을 통한 문서 자동화로 UI 가이드라인, 디자인 시스템 등을 쉽게 만들 수 있어요.
+
+**3. Testing**  
+스토리를 통해 개발한 UI 컴포넌트에 대한 테스트를 수행 할 수 있어요.
+
+**4. Sharing**  
+Storybook에 게시하거나 Notion, Figma에 삽입하여 다른 사람들과 작업을 공유할 수 있어요.
+
+요약하자면, 컴포넌트를 다양한 상태로 렌더링해 문서화, 테스트, 공유를 가능하게 해주는 도구라고 말할 수 있어요.  
+따라서 작은 UI 컴포넌트부터 여러 컴포넌트의 결합인 페이지까지 bottom-up(상향식)으로 개발하는  
+CDD(Component Driven Development) 방법론을 적용하기에 적합한 도구이기도 해요.
+
+Storybook의 다양한 기능 중에서 스토리를 작성하는 방법에 대해 알아볼게요.
 
 ## Story 작성법
+
+```bash
+npm create storybook@latest
+```
+
+```plain
+.storybook
+ ┣ main.ts            # 스토리북 설정 파일
+ ┗ preview.tsx        # 모든 스토리에 적용되는 전역 설정
+ ...
+ stories
+ ┣ assets             # 스토리에서 사용하는 이미지 등의 에셋
+ ┣ Button.stories.ts  # 스토리 파일 (버튼 컴포넌트)
+ ┣ ...
+ ┗ Configure.mdx      # 스토리북 문서 페이지
+```
+
+Storybook을 설치하면 `.storybook`, `stories` 디렉토리가 생기는데 각각의 역할은 다음과 같아요.
+스토리를 작성하기 전에 먼저 `Button` 컴포넌트를 살펴볼게요.
+
+```tsx
+export interface ButtonProps {
+  primary?: boolean;
+  backgroundColor?: string;
+  size?: "small" | "medium" | "large";
+  label: string;
+  onClick?: () => void;
+}
+
+export const Button = ({
+  primary = false,
+  size = "medium",
+  backgroundColor,
+  label,
+  ...props
+}: ButtonProps) => {
+  const mode = primary
+    ? "storybook-button--primary"
+    : "storybook-button--secondary";
+  return (
+    <button
+      type="button"
+      className={...}
+      style={{ backgroundColor }}
+      {...props}
+    >
+      {label}
+    </button>
+  );
+};
+```
+
+`Button` 컴포넌트는 `primary`, `backgroundColor`, `size`, `label`, `onClick`을  
+props로 받고 있어요. `label` prop을 제외하고는 전부 optional이네요.
+
+`Button`의 props들을 간단하게 살펴봤으니 `Button.stories.ts`를 생성해서 스토리 작성법을 알아볼게요.  
+먼저, 스토리를 정의하는 meta 객체를 정의할게요.
+
+```tsx
+const meta = {
+  title: "게시판/Button",
+  component: Button,
+  parameters: {
+    layout: "centered",
+  },
+  tags: ["autodocs"],
+  argTypes: {
+    backgroundColor: { control: "color" },
+    primary: { control: "boolean" },
+    label: { control: "text" },
+  },
+  args: { onClick: fn() },
+} satisfies Meta<typeof Button>;
+```
+
+각 속성은 다음과 같은 역할을 합니다.
+
+- `title`: 컴포넌트의 이름, 경로를 설정해요.
+- `component` : 어떤 컴포넌트에 대한 스토리인지 지정해요.
+- `parameters` : 스토리 표시 방법에 대한 설정이에요.
+- `tags` : 스토리에 적용할 태그에요.
+- `argTypes` : 컴포넌트의 props에 대한 타입과 제어 방법을 정의해요.
+- `args` : 모든 스토리에 기본적으로 적용될 props를 설정해요.
+
+타입스크립트의 `satisfies` 연산자를 통해 `meta`의 타입이 `Meta<typeof Button>` 타입이 맞는지 확인하고  
+현재의 타입 정보를 유지하게 할 수 있어요.
+
+스토리북은 `Button`의 타입 정의를 분석해 자동으로 각 props에 대한 컨트롤을 생성해줘요.  
+`argTypes`은 이를 보완하거나 재정의하기 위한 것으로, 사실 위 예시에서 `primary`나 `label` 같은 props는 따로 정의하지 않아도 자동으로 생성돼요.
+
+```tsx
+const meta = {
+  // ...
+};
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+```
+
+스토리북은 각 스토리 파일에서 `meta` 객체를 찾아 컴포넌트의 메타데이터로 인식하기 때문에
+`export default`를 통해 meta 객체를 내보내줘요.
+
+그리고 스토리의 타입을 정의하는 `StoryObj<T>`를 통해 `story` 타입을 정의하게 돼요.
+
+```tsx
+const meta = {
+  // ...
+};
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+export const Primary: Story = {
+  args: {
+    primary: true,
+    label: "Button",
+  },
+};
+```
+
+## 출처
+
+https://storybook.js.org/docs
+https://kyechan99.github.io/post/lib/storybook#args-%EC%82%AC%EC%9A%A9
