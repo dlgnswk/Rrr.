@@ -4,16 +4,20 @@ interface MDXImageProps {
   src: string;
   alt: string;
   caption?: string;
+  width?: string;
 }
 
-const MDXImage: React.FC<MDXImageProps> = ({ src, alt, caption }) => {
+const MDXImage: React.FC<MDXImageProps> = ({ src, alt, caption, width }) => {
   return (
-    <figure>
-      <img src={src} alt={alt} style={{ maxWidth: "100%", height: "auto" }} />
+    <figure className="w-full">
+      <img
+        src={src}
+        alt={alt}
+        style={width ? { width } : { width: "100%" }}
+        className="mx-auto"
+      />
       {caption && (
-        <figcaption
-          style={{ color: "#666", textAlign: "center", marginTop: "8px" }}
-        >
+        <figcaption className="text-center text-sm text-gray-500">
           {caption}
         </figcaption>
       )}
