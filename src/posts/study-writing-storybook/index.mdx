@@ -11,7 +11,7 @@ tags: ["Storybook", "Story"]
 publishedAt: "2025년 2월 19일"
 updatedAt: "2025년 2월 19일"
 keywords: ["Storybook", "Story"]
-isPublished: false
+isPublished: true
 ---
 
 이전에 작업했던 프로젝트들에서 구현한 컴포넌트가 많아지면서 관리하기 힘든 이슈가 있었어요.  
@@ -137,6 +137,13 @@ const meta = {
 타입스크립트의 `satisfies` 연산자를 통해 `meta`의 타입이 `Meta<typeof Button>` 타입이 맞는지 확인하고  
 현재의 타입 정보를 유지하게 할 수 있어요.
 
+<MDXImage
+  width="300px"
+  src="/posts/study-writing-storybook/storybook-meta-title.png"
+  alt="meta 객체의 title 속성"
+  caption="meta 객체의 title 속성"
+/>
+
 스토리북은 `Button`의 타입 정의를 분석해 자동으로 각 props에 대한 컨트롤을 생성해줘요.  
 `argTypes`은 이를 보완하거나 재정의하기 위한 것으로, 사실 위 예시에서 `primary`나 `label` 같은 props는 따로 정의하지 않아도 자동으로 생성돼요.
 
@@ -170,7 +177,66 @@ export const Primary: Story = {
 };
 ```
 
+예시 코드처럼 `Button` 컴포넌트에 props로 넘겨줄 값을 `args` 객체에 담아  
+`Button` 컴포넌트의 스토리를 생성할 수 있어요.
+
+스토리를 내보내지 않으면 Storybook에 생성되지 않으니까 꼭 작성해야 해요.
+
+<MDXImage
+  src="/posts/study-writing-storybook/story-page.png"
+  alt="작성한 버튼 컴포넌트의 스토리"
+  caption="작성한 버튼 컴포넌트의 스토리"
+/>
+
+왼쪽 사이드바에는 작성한 스토리들을 볼 수 있어요.  
+메인 화면에서는 렌더링된 컴포넌트와 `argTypes`에 정의한 props와 control을 확인할 수 있어요.
+
+```tsx
+export const Primary: Story = {
+  args: {
+    primary: false,
+    label: "Button",
+  },
+};
+
+export const Secondary: Story = {
+  args: {
+    label: "버튼",
+  },
+};
+
+export const Large: Story = {
+  args: {
+    size: "large",
+    label: "Button",
+  },
+};
+
+export const Small: Story = {
+  args: {
+    size: "small",
+    label: "Button",
+  },
+};
+```
+
+<MDXImage
+  src="/posts/study-writing-storybook/stories.png"
+  alt="하나의 컴포넌트에 여러가지 스토리"
+  caption="하나의 컴포넌트에 여러가지 스토리"
+/>
+
+이렇게 하나의 `stories.tsx` 파일에 여러 story들을 작성해서 다양한 상태에 대응되는 UI를 확인해 볼 수 있어요.
+
+## 마무리
+
+복잡한 컴포넌트는 스토리 작성이 쉽지 않지만, 익숙해지면서 점점 빠르게 작성할 수 있었고, 초기 작업량이 조금 늘어나지만 이후에는 오히려 개발속도가 더 빨라진다는 느낌을 받았어요.
+
+컴포넌트의 props를 통해 여러 상태를 제어하고 확인하며 구현할 수 있다는 게 개발적으로도 효율적이었고, 다른 팀원들과 소통할 때도 컴포넌트와 페이지를 보고 이야기하니 커뮤니케이션 비용을 많이 줄일 수 있었어요.
+
+앞으로도 꾸준히 사용하면서 Storybook을 잘 다뤄보고 싶고 프론트엔드 개발자라면 한번쯤 써보는 것도 좋을것 같아요!
+
 ## 출처
 
-https://storybook.js.org/docs
+https://storybook.js.org/docs  
 https://kyechan99.github.io/post/lib/storybook#args-%EC%82%AC%EC%9A%A9
