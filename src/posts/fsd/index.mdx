@@ -1,0 +1,66 @@
+---
+title: "FSD 아키텍쳐에 대해서 알아보자"
+titleStyle:
+  - text: "FSD"
+    isBold: true
+  - text: "에 대해서 알아보자"
+    isBold: false
+description: "프론트엔드의 아키텍처 방법론 중 하나인 FSD에 대해 알아볼게요"
+category: "frontend"
+tags: ["FSD", "Architecture", "Design Pattern"]
+publishedAt: "2025년 3월 1일"
+updatedAt: "2025년 3월 1일"
+keywords: ["FSD", "프론트엔드 구조"]
+isPublished: false
+---
+
+저는 지금까지 프로젝트를 진행해오면서 React 프로젝트에서 흔히 볼 수 있는 components, hooks, pages, layouts 등으로 구성된 폴더 구조를 사용해 왔는데,
+components 폴더 내부가 깊어지거나 너무 많은 컴포넌트들이 생기거나 하는 등의 문제점이 명확한 기준이 없어서 라는 생각이 들었어요.
+
+그래서 최근 시작한 프로젝트에 도입하기 위한 새로운 아키텍처, 디자인 패턴을 찾아보다가 FSD 라는 아키텍처를 찾아보게 되었어요. 주변에서 들어난 보았지만 자세히는 몰랐었던 FSD를 도입하기 위해 찾아보며 알게 됐던 내용들을 정리해보려고 해요.
+
+[공식 문서](https://feature-sliced.design/kr/)에서는 FSD가 프로젝트, 팀 규모의 상관없이 사용할 수 있다고 해요.  
+또한 점진적으로 적용할 수 있고, [마이그레이션 가이드](https://feature-sliced.design/kr/docs/guides/migration/from-custom)까지 제공하고 있어요.
+
+그럼 이제 FSD에 대해서 조금씩 알아볼게요.
+
+## 개념
+
+<MDXImage
+  src="/posts/fsd/fsd_schema.jpg"
+  alt="FSD의 계층 구조"
+  caption="FSD의 계층 구조"
+/>
+
+FSD를 찾아보면 제일 많이 볼 수 있는 이미지에요.  
+이 이미지는 FSD는 폴더 구조를 레이어, 슬라이스, 세그먼트로 이루어진 `3-Depth`를 기본으로 제안해요.
+
+각 항목에 대한 의미를 알아볼게요.
+
+### 레이어
+
+1. **App** : `Router`, `Provider` 컴포넌트 등 전역 설정과 같은 요소가 들어가요.
+2. **Pages** : `Router`에 따라서 분리된 페이지 컴포넌트가 들어가요.
+3. **Widgets** :
+4. **Features** :
+5. **Entities** :
+6. **Shared** : `hook`, `type`, `util` 등 재사용 가능하거나 특정 비즈니스 로직이 아닌 공통의 요소가 들어가요.
+
+- `Processes`는 더 이상 사용되지 않아요.
+- `App`과 `Shared`는 하위 슬라이스를 가지지 않고 세그먼트로 이루어져요.
+
+레이어의 각 숫자는 순서가 아니라 위계를 의미해요.  
+FSD는
+
+처음에는 `App`, `Page`, `Entities`, `Shared` 이 네가지 폴더만 사용하는게 간단해요.
+
+### 슬라이스
+
+### 세그먼트
+
+## 출처
+
+https://feature-sliced.design/kr/  
+https://velog.io/@teo/fsd  
+https://velog.io/@teo/separation-of-concerns-of-frontend  
+https://www.youtube.com/watch?v=64Fx5Y1gEOA
