@@ -139,6 +139,9 @@ body[data-theme="dune"] {
   & h2 {
     @apply text-3xl font-bold mb-1;
   }
+  & h3 {
+    @apply text-2xl font-bold mb-1;
+  }
 
   & ul {
     @apply list-disc pl-5 my-0;
@@ -172,7 +175,7 @@ body[data-theme="dune"] {
   }
 
   & blockquote {
-    @apply pl-4 border-l-4 border-black;
+    @apply pl-4 border-l-4 border-black mt-0 mb-1;
 
     & > p:first-of-type::before,
     & > p:first-of-type::after {
