@@ -1,11 +1,11 @@
 ---
-title: "React Router 핵심 요약"
+title: "React Router 간단 요약"
 titleStyle:
   - text: "React Router "
     isBold: true
-  - text: "핵심 요약"
+  - text: "간단 요약"
     isBold: false
-description: "React Router의 핵심만 요약해봤어요."
+description: "React Router의 기능을 간단하게 요약해봤어요."
 category: "frontend"
 tags: ["React", "React-Router", "React-Router-Dom"]
 publishedAt: "2025년 2월 18일"
@@ -14,6 +14,376 @@ keywords: ["React", "React-Router", "React-Router-Dom"]
 isPublished: false
 ---
 
+**라우팅(Routing)** 이란 어떤 네트워크에서 데이터를 보내기 위해 최적의 **경로(Route)** 를 선택하는 과정을 말하고,  
+웹에서의 라우팅이란 사용자가 요청한 URL에 따라 알맞은 페이지를 보여주는 것을 의미해요.
+
+React 애플리케이션은 싱글 페이지 애플리케이션이기 때문에 라우팅을 위해 별도의 라우팅 라이브러리를 사용해야하는데  
+그 중에서도 가장 많이 사용되는 라이브러리인 **React Router**에 대해서 알아보려고 해요.
+
+들어가기에 앞서, 저는 다음과 같은 구조로 프로젝트를 구성했어요.
+
+- `React` + `Typescript` + `Vite`
+- `React Router v6.4`
+
+그리고 FSD 폴더 구조를 적용했기 때문에, 아래에서 설명할 기본 설정 후에는 다음과 같은 폴더구조를 가지고 있게 돼요.
+
+```plain
+├─src/
+│  ├─app/
+│  │  └─config/
+│  │  │  └─router.tsx  // 라우팅 목록
+│  │  └─ui/
+│  │  │  └─Router.tsx  // 라우터 설정
+│  │  ├─pages/
+│  │  │  └─HomePage/
+│  │  │  │  └─ui/
+│  │  │  │    └─Home.tsx  // 홈 페이지
+│  │  │  └─LoginPage/
+│  │  │  │  └─ui/
+│  │  │  │    └─Login.tsx // 로그인 페이지
+│  │  └─main.tsx
+│  └─index.css
+```
+
+## 기본 설정
+
+먼저, 다음과 같이 `react-router-dom`을 설치할게요.
+
+```bash
+npm install react-router-dom
+```
+
+이제 라우팅에 사용할 페이지 컴포넌트를 추가해줄게요.
+
+```tsx
+// src/pages/HomePage/ui/Home.tsx
+export default function Home() {
+  return <h1>홈 페이지</h1>;
+}
+```
+
+```tsx
+// src/pages/LoginPage/ui/Login.tsx
+export default function Login() {
+  return <h1>로그인 페이지</h1>;
+}
+```
+
+이제 `/src/app/config/router.tsx` 파일을 생성해 프로젝트에서 사용할 라우트들을 작성해볼게요.
+각 라우트 객체는 `path`와 `element` 등의 속성을 가지며, 특정 URL에 어떤 컴포넌트를 보여줄지 정의해요.
+
+```tsx
+import { createBrowserRouter } from "react-router";
+import Home from "../../pages/HomePage/ui/Home";
+import Login from "../../pages/LoginPage/ui/Login";
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Home />,
+  },
+  {
+    path: "/login",
+    element: <Login />,
+  },
+]);
+
+export default router;
+```
+
+이렇게 작성하면 `/` 경로에 접속하면 `<Home>` 컴포넌트가 렌더링되고, `/login` 경로에 접속하면 `<Login>` 컴포넌트가 렌더링돼요.
+`createBrowserRouter` 함수를 사용해 이러한 라우트 설정들을 하나의 라우터 객체로 만들 수 있어요.
+
+이제 라우터 객체를 `<RouterProvider>` 컴포넌트로 전달해볼게요.
+
+```tsx
+// src/app/ui/Router.tsx
+import { RouterProvider } from "react-router-dom";
+import router from "../config/router";
+
+const Router = () => {
+  return <RouterProvider router={router} />;
+};
+
+export default Router;
+```
+
+`<RouterProvider>` 컴포넌트의 `router` 속성에 앞에서 만들어준 라우터 객체 `router`를 넘겨줬어요.  
+이제 `main.tsx`에 `<Router>` 컴포넌트를 넣어주기만 하면 기본 라우팅 설정은 끝나요.
+
+```tsx
+// src/main.tsx
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+
+import Router from "./ui/Router.tsx";
+
+import "./index.css";
+
+createRoot(document.getElementById("root")!).render(
+  <StrictMode>
+    <Router />
+  </StrictMode>
+);
+```
+
+<div className="w-full flex items-end">
+  <MDXImage
+    src="/posts/react-router/default-home.png"
+    width="200px"
+    alt="localhost:5173/"
+    caption="localhost:5173/"
+  />
+  <MDXImage
+    src="/posts/react-router/default-login.png"
+    width="200px"
+    alt="localhost:5173/"
+    caption="localhost:5173/"
+  />
+</div>
+
+추가로 저는 `main.tsx` 파일의 경로가 `src/app/main.tsx`에 위치하기 때문에 `index.html`의 경로를 수정해 주었어요.
+
+## 레이아웃
+
+라우팅으로 연결된 `<Home>` 컴포넌트와 `<Login>` 컴포넌트에 공통적인 레이아웃을 적용해볼게요.
+공통 레이아웃에 네비게이션바 컴포넌트 등을 추가해 공통으로 사용하게 할 수도 있어요.
+
+먼저 네비게이션 컴포넌트 만들어볼게요.
+
+```tsx
+// src/shared/ui/NavigationBar.tsx
+import { Link } from "react-router-dom";
+
+export default function NavigationBar() {
+  return (
+    <nav className="flex p-4 gap-4 bg-gray-300">
+      <a href="/">Home</a>
+      <a href="/login">Login</a>
+    </nav>
+  );
+}
+```
+
+이제 레이아웃 컴포넌트도 만들어서 `<NavigationBar>`컴포넌트도 넣어줄게요.
+
+```tsx
+// src/app/ui/DefaultLayout.tsx
+import { Outlet } from "react-router-dom";
+import NavigationBar from "../../shared/ui/NavigationBar";
+
+export default function DefaultLayout() {
+  return (
+    <>
+      <NavigationBar />
+      <Outlet />
+    </>
+  );
+}
+```
+
+그리고 `router.tsx`만 수정해주면 됩니다.
+
+```tsx
+const router = createBrowserRouter([
+  {
+    element: <DefaultLayout />,
+    children: [
+      {
+        path: "/",
+        element: <Home />,
+      },
+      {
+        path: "/login",
+        element: <Login />,
+      },
+    ],
+  },
+]);
+```
+
+`react-router-dom`의 `<Outlet>` 컴포넌트는 자식 라우트의 컴포넌트가 렌더링될 위치를 지정해요.
+부모 라우트에 `path` 속성을 지정하지 않으면, 모든 하위 경로에서 레이아웃이 공통으로 적용돼요.
+
+<MDXImage
+  src="/posts/react-router/default-layout.png"
+  width="300px"
+  alt="DefaultLayout 컴포넌트 적용"
+  caption="DefaultLayout 컴포넌트 적용"
+/>
+
+## Link, NavLink
+
+위의 `<DefaultLayout>` 컴포넌트에서 네비게이팅을 위해 `<a>` 태그를 사용했어요.
+React Router는 `<Link>` 와 `<NavLink>`와 같은 네비게이팅 컴포넌트를 지원해요.
+
+이러한 컴포넌트들은 `<a>` 태그와 달리 다음과 같은 장점이 있어요:
+
+- 페이지 전체를 새로고침하지 않고 필요한 부분만 업데이트해요.
+- SPA의 클라이언트 사이드 라우팅을 제대로 활용할 수 있어요.
+
+`<Link>` 컴포넌트는 가장 기본적인 네비게이팅 컴포넌트에요.  
+다음과 같이 사용할 수 있어요.
+
+```tsx
+// src/shared/ui/NavigationBar.tsx
+import { Link } from "react-router-dom";
+
+export default function NavigationBar() {
+  return (
+    <nav className="flex p-4 gap-4 bg-gray-300">
+      <Link to="/">Home</Link>
+      <Link to="/login">Login</Link>
+    </nav>
+  );
+}
+```
+
+조건에 따라 페이지를 네비게이팅 해야 한다면 `useNavigate` 훅을 사용할 수 있어요.
+
+```tsx
+import { useNavigate } from "react-router-dom";
+
+export default function Login() {
+  const navigate = useNavigate();
+  const handleLogin = async () => {
+    // 로그인 처리 로직
+    navigate("/");
+  };
+
+  return (
+    <>
+      <h1>로그인 페이지</h1>
+      <button onClick={handleLogin}>로그인하기</button>
+    </>
+  );
+}
+```
+
+`<NavLink>` 컴포넌트는 네비게이션 바와 같은 UI에서 활용하기 좋은 컴포넌트에요.  
+`isActive` 속성을 통해 현재 링크의 상태를 `boolean`값으로 확인할 수 있어요.
+
+다음과 같이 사용해요.
+
+```tsx
+// src/shared/ui/NavigationBar.tsx
+import { Link } from "react-router-dom";
+
+export default function NavigationBar() {
+  return (
+    <nav className="flex p-4 gap-4 bg-gray-300">
+      <NavLink
+        to="/"
+        className={({ isActive }) => (isActive ? "text-red-500" : "")}
+      >
+        Home
+      </NavLink>
+      <NavLink
+        to="/login"
+        className={({ isActive }) => (isActive ? "text-red-500" : "")}
+      >
+        Login
+      </NavLink>
+    </nav>
+  );
+}
+```
+
+<MDXImage
+  src="/posts/react-router/default-layout-navlink.png"
+  width="300px"
+  alt="NavLink - localhost:5173/"
+  caption="NavLink - localhost:5173/"
+/>
+
+## 동적 세그먼트
+
+일반적으로 사용되는 상세 페이지의 URL은 정적이 아니라 데이터 기반(id, code 등)으로 변화해요.  
+React-Router에서는 이러한 동적 세그먼트를 어떻게 사용할 수 있는지 알아볼게요.
+
+```plain
+├─src/
+│  ├─app/
+│  │  └─config/
+│  │  │  └─router.tsx
+│  │  └─ui/
+│  │  │  └─Router.tsx
+│  │  ├─pages/
+│  │  │  └─HomePage/
+│  │  │  │  └─ui/
+│  │  │  │    └─Home.tsx
+│  │  │  └─LoginPage/
+│  │  │  │  └─ui/
+│  │  │  │    └─Login.tsx
+│  │  │  └─ticketPage/
+│  │  │  │  └─ui/
+│  │  │  │    └─Ticket.$ticket.tsx // 동적 세그먼트를 사용할 페이지
+│  │  └─main.tsx
+│  └─index.css
+```
+
+위와 같이 `$` prefix를 사용해서 동적 세그먼트 페이지 컴포넌트를 만들 수 있어요.
+그리고 `router.tsx`에 `Ticket.$ticket.tsx` 를 추가해줄게요.
+
+```tsx
+const router = createBrowserRouter([
+  {
+    element: <DefaultLayout />,
+    children: [
+      {
+        ...
+      },
+      {
+        path: "/ticket/:ticketId",
+        element: <TicketDetail />,
+      },
+    ],
+  },
+]);
+```
+
+`Ticket.$ticket.tsx` 컴포넌트는 `/ticket/123`, `/ticket/20250101` 과 같은 URL에 자동으로 매핑돼요.
+컴포넌트 내부에서는 다음과 같이 세그먼트를 추출해서 사용할 수 있어요.
+
+```tsx
+// src/pages/ticketPage/ui/Ticket.$ticket.tsx
+import { useParams } from "react-router-dom";
+
+export default function TicketDetail() {
+  const { ticketId } = useParams();
+
+  return (
+    <div>
+      <h1>티켓 상세 정보</h1>
+      <p>티켓 번호: {ticketId}</p>
+    </div>
+  );
+}
+```
+
+<MDXImage
+  src="/posts/react-router/dynamic-segments.png"
+  width="300px"
+  alt="동적 세그먼트 - localhost:5173/ticket/250101"
+  caption="동적 세그먼트 - localhost:5173/ticket/250101"
+/>
+
+## 중첩 라우팅
+
+중첩 라우팅은 라우트 내에서 다른 라우트를 포함하는 구조를 말하는데요, 다음과 같은 경우에 사용할 수 있어요.
+
+- 공통 레이아웃 내에서 여러 하위 페이지를 구현하는 경우
+- 탭 기반의 인터페이스를 구현하는 경우
+- 모달, 팝업을 URL로 관리하는 경우
+
+앞에서 사용한 `<DefaultLayout>` 컴포넌트에 `<NavigationBar>`와 `<Outlet>` 컴포넌트를 렌더링 한 것 또한 중첩 라우팅이라고 볼 수 있어요.  
+이렇게 `children` 속성을 기반으로 한 중첩 라우팅을 객체 기반 중첩 라우팅 이라고 해요.
+
+React Router v6.4 이상에서는 파일 이름을 사용한 중첩 라우팅이 추가되었어요.
+
 ## 출처
 
-https://chanhuiseok.github.io/posts/react-14/
+https://reactrouter.com/  
+https://shape-coding.tistory.com/entry/React-리액트-라우터-RouterProvider와-CreateBrowserRouter  
+https://www.heropy.dev/p/9tesDt  
+https://velog.io/@ahn-sujin/React-Link-컴포넌트와-useNavigate의-차이
