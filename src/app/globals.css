@@ -167,11 +167,15 @@ body[data-theme="dune"] {
   }
 
   & :not(pre) > code {
-    @apply border border-[rgba(244,248,255,1)] bg-[rgba(244,248,255,0.7)] px-1 py-0.5 rounded-[6px] font-normal font-mono text-sm;
+    @apply border border-[#DCDFE2] bg-[#E9EBED] px-1 py-0.5 rounded-[6px] font-normal font-mono text-sm;
     &::before,
     &::after {
       display: none;
     }
+  }
+
+  & figure {
+    @apply my-0;
   }
 
   & blockquote {
