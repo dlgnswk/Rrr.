@@ -11,13 +11,13 @@ tags: ["React", "React-Router", "React-Router-Dom"]
 publishedAt: "2025년 2월 18일"
 updatedAt: "2025년 2월 18일"
 keywords: ["React", "React-Router", "React-Router-Dom"]
-isPublished: false
+isPublished: true
 ---
 
 **라우팅(Routing)** 이란 어떤 네트워크에서 데이터를 보내기 위해 최적의 **경로(Route)** 를 선택하는 과정을 말하고,  
 웹에서의 라우팅이란 사용자가 요청한 URL에 따라 알맞은 페이지를 보여주는 것을 의미해요.
 
-React 애플리케이션은 싱글 페이지 애플리케이션이기 때문에 라우팅을 위해 별도의 라우팅 라이브러리를 사용해야하는데  
+React 애플리케이션은 싱글 페이지 애플리케이션이기 때문에 라우팅을 위해 별도의 라우팅 라이브러리를 사용해야 하는데  
 그 중에서도 가장 많이 사용되는 라이브러리인 **React Router**에 대해서 알아보려고 해요.
 
 들어가기에 앞서, 저는 다음과 같은 구조로 프로젝트를 구성했어요.
@@ -42,7 +42,6 @@ React 애플리케이션은 싱글 페이지 애플리케이션이기 때문에 
 │  │  │  │  └─ui/
 │  │  │  │    └─Login.tsx // 로그인 페이지
 │  │  └─main.tsx
-│  └─index.css
 ```
 
 ## 기본 설정
@@ -73,7 +72,7 @@ export default function Login() {
 각 라우트 객체는 `path`와 `element` 등의 속성을 가지며, 특정 URL에 어떤 컴포넌트를 보여줄지 정의해요.
 
 ```tsx
-import { createBrowserRouter } from "react-router";
+import { createBrowserRouter } from "react-router-dom";
 import Home from "../../pages/HomePage/ui/Home";
 import Login from "../../pages/LoginPage/ui/Login";
 
@@ -267,7 +266,7 @@ export default function Login() {
 
 ```tsx
 // src/shared/ui/NavigationBar.tsx
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 export default function NavigationBar() {
   return (
@@ -296,10 +295,21 @@ export default function NavigationBar() {
   caption="NavLink - localhost:5173/"
 />
 
-## 동적 세그먼트
+## 중첩 라우팅
 
-일반적으로 사용되는 상세 페이지의 URL은 정적이 아니라 데이터 기반(id, code 등)으로 변화해요.  
-React-Router에서는 이러한 동적 세그먼트를 어떻게 사용할 수 있는지 알아볼게요.
+중첩 라우팅은 라우트 내에서 다른 라우트를 포함하는 구조를 말하는데요, 다음과 같은 경우에 사용할 수 있어요.
+
+- 공통 레이아웃 내에서 여러 하위 페이지를 구현하는 경우
+- 탭 기반의 인터페이스를 구현하는 경우
+- 모달, 팝업을 URL로 관리하는 경우
+
+앞에서 사용한 `<DefaultLayout>` 컴포넌트에 `<NavigationBar>`와 `<Outlet>` 컴포넌트를 렌더링 한 것 또한 중첩 라우팅이라고 볼 수 있어요.
+
+이렇게 `children` 속성을 기반으로 한 중첩 라우팅을 객체 기반 중첩 라우팅 이라고 하는데,  
+React Router v6.4 이상에서는 파일명을 사용한 중첩 라우팅이 추가되었어요.
+
+파일명 중첩 라우팅은 `.` 구분자를 사용해서 `.` 앞의 파일명이 다른 파일명과 일치하면 자동으로 하위경로를 만들어줘요.  
+다음과 같이 파일을 생성할게요.
 
 ```plain
 ├─src/
@@ -317,9 +327,47 @@ React-Router에서는 이러한 동적 세그먼트를 어떻게 사용할 수 �
 │  │  │  │    └─Login.tsx
 │  │  │  └─ticketPage/
 │  │  │  │  └─ui/
-│  │  │  │    └─Ticket.$ticket.tsx // 동적 세그먼트를 사용할 페이지
+│  │  │  │    └─Ticket.tsx         // /ticket - 레이아웃
+│  │  │  │    └─Ticket._index.tsx  // /ticket - 기본 컨텐츠
+│  │  │  │    └─Ticket.detail.tsx  // /ticket/detail
+│  │  │  │    └─Ticket.$ticket.tsx // /ticket/123, /ticket/abc
+│  │  │  │    └─Ticket.$ticket.tsx // 동적 세그먼트 페이지
 │  │  └─main.tsx
-│  └─index.css
+```
+
+`ticketPage/ui` 디렉토리의 파일명은 각각 이런 역할을 가지고 있어요:
+
+- `Ticket.tsx`: `/ticket` 페이지의 레이아웃, 컨테이너
+- `Ticket._index.tsx`: `/ticket` 페이지의 기본으로 보여지는 컨텐츠
+- `Ticket.detail.tsx`: `/ticket/detail`과 같은 하위 라우트 페이지
+- `Ticket.$ticket.tsx`: `/ticket/123`, `/ticket/20250101` 과 같은 동적 세그먼트 페이지
+
+## 동적 세그먼트
+
+일반적으로 사용되는 상세 페이지의 URL은 정적이 아니라 데이터 기반(id, code 등)으로 변화해요.  
+React Router v6.4 이상에서는 앞에서 설명한 파일명 중첩 라우팅으로 이러한 동적 세그먼트 페이지를 쉽게 구현하고 보여줄 수 있어요.
+
+```plain
+├─src/
+│  ├─app/
+│  │  └─config/
+│  │  │  └─router.tsx
+│  │  └─ui/
+│  │  │  └─Router.tsx
+│  │  ├─pages/
+│  │  │  └─HomePage/
+│  │  │  │  └─ui/
+│  │  │  │    └─Home.tsx
+│  │  │  └─LoginPage/
+│  │  │  │  └─ui/
+│  │  │  │    └─Login.tsx
+│  │  │  └─ticketPage/
+│  │  │  │  └─ui/
+│  │  │  │    └─Ticket.tsx
+│  │  │  │    └─Ticket._index.tsx
+│  │  │  │    └─Ticket.detail.tsx
+│  │  │  │    └─Ticket.$ticket.tsx // 동적 세그먼트 페이지
+│  │  └─main.tsx
 ```
 
 위와 같이 `$` prefix를 사용해서 동적 세그먼트 페이지 컴포넌트를 만들 수 있어요.
@@ -330,9 +378,7 @@ const router = createBrowserRouter([
   {
     element: <DefaultLayout />,
     children: [
-      {
-        ...
-      },
+      // ... 다른 라우트들
       {
         path: "/ticket/:ticketId",
         element: <TicketDetail />,
@@ -367,19 +413,6 @@ export default function TicketDetail() {
   alt="동적 세그먼트 - localhost:5173/ticket/250101"
   caption="동적 세그먼트 - localhost:5173/ticket/250101"
 />
-
-## 중첩 라우팅
-
-중첩 라우팅은 라우트 내에서 다른 라우트를 포함하는 구조를 말하는데요, 다음과 같은 경우에 사용할 수 있어요.
-
-- 공통 레이아웃 내에서 여러 하위 페이지를 구현하는 경우
-- 탭 기반의 인터페이스를 구현하는 경우
-- 모달, 팝업을 URL로 관리하는 경우
-
-앞에서 사용한 `<DefaultLayout>` 컴포넌트에 `<NavigationBar>`와 `<Outlet>` 컴포넌트를 렌더링 한 것 또한 중첩 라우팅이라고 볼 수 있어요.  
-이렇게 `children` 속성을 기반으로 한 중첩 라우팅을 객체 기반 중첩 라우팅 이라고 해요.
-
-React Router v6.4 이상에서는 파일 이름을 사용한 중첩 라우팅이 추가되었어요.
 
 ## 출처
 
