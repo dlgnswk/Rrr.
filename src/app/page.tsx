@@ -1,4 +1,4 @@
-import { getAllPosts } from "@/app/utils/mdx";
+import { getAllPosts } from "@/utils/mdx";
 import HomepageTitle from "@/components/homepage/HomepageTitle";
 import HomepageLayout from "@/components/homepage/HomepageLayout";
 import HomepageFooter from "@/components/homepage/HomepageFooter";
