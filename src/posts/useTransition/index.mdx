@@ -69,6 +69,8 @@ function UpdateWishlist() {
 > [!note] useTransition?
 > 리액트 18에서 도입된 `useTransition`은 여러 상태 업데이트가 UI 변경을 유발하게 될 때 우선순위를 가지게 해요. 무거운 UI 업데이트를 유발하는 상태를 `startTransition`에 넣어 리액트에게 후순위(백그라운드)로 처리하라고 알려줘 반응성을 향상 시키는 훅이에요.
 
+<p> </p>
+
 ```tsx
 function UpdateWishlist() {
   const [item, setItem] = useState<string>("");
