@@ -9,7 +9,7 @@ export default async function PostPage({ params }: { params: Params }) {
   const { slug } = await params;
   const posts = await getAllPosts();
   const post = posts.find((post) => post.slug === slug);
-  console.log(post);
+
   if (!post) {
     return <div>Post not found</div>;
   }
@@ -36,7 +36,7 @@ export async function generateMetadata({ params }: { params: Params }) {
   return {
     title: `${post.title} - Rrr.`,
     description: post.description,
-    keywords: post.keywords,
+    tags: post.tags,
     openGraph: {
       title: post.title,
       description: post.description,
