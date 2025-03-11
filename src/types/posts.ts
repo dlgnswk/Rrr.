@@ -25,7 +25,6 @@ export interface Post {
   tags: (typeof postTags)[number][];
   publishedAt: string;
   updatedAt: string;
-  keywords: string[];
   content: MDXRemoteSerializeResult;
   isPublished: boolean;
 }
