@@ -12,7 +12,7 @@ const MDXContent = dynamic(() => import("@/components/mdx/MDXContent"), {
 export default function PostContent({ post }: { post: Post }) {
   return (
     <article className="flex flex-col w-full gap-3 mb-[100px] mt-8">
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col w-full">
         <h1 className="text-5xl break-keep">
           {post.titleStyle.map((part, index) => (
             <span key={index} className={part.isBold ? "font-bold" : ""}>
@@ -20,7 +20,21 @@ export default function PostContent({ post }: { post: Post }) {
             </span>
           ))}
         </h1>
-        <div className="flex items-center gap-2 mt-1">
+
+        {post.tags && post.tags.length > 0 && (
+          <div className="w-full flex gap-2 mt-[20px] mb-[30px]">
+            {post.tags.map((tag) => (
+              <div
+                key={tag}
+                className="w-fit rounded-full bg-[#D9D9D9] bg-opacity-40 py-0.5 px-2.5 text-[12px] text-[#4F5968]"
+              >
+                {tag}
+              </div>
+            ))}
+          </div>
+        )}
+
+        <div className="w-full flex items-center gap-2">
           <div className="w-[36px] h-[36px] text-foreground">
             <Profile />
           </div>
@@ -33,18 +47,6 @@ export default function PostContent({ post }: { post: Post }) {
         </div>
       </div>
       <MDXContent source={post.content} />
-      {post.tags && post.tags.length > 0 && (
-        <div className="w-full flex gap-2 mt-8">
-          {post.tags.map((tag) => (
-            <div
-              key={tag}
-              className="w-fit rounded-full bg-[#D9D9D9] bg-opacity-40 py-0.5 px-2.5 text-[12px] font-semibold text-[#4F5968]"
-            >
-              #{tag}
-            </div>
-          ))}
-        </div>
-      )}
     </article>
   );
 }
