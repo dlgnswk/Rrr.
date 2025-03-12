@@ -5,7 +5,7 @@ export default function HomepageLayout({
 }) {
   return (
     <div>
-      <main className="px-5 md:mx-auto w-full md:w-[80%] lg:w-[70%] xl:w-[60%] min-h-screen flex flex-col pt-10">
+      <main className="px-5 md:mx-auto  max-w-[900px] w-full min-h-screen flex flex-col pt-10">
         {children}
       </main>
     </div>
