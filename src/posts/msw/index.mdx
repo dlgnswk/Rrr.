@@ -10,7 +10,7 @@ category: "frontend"
 tags: ["MSW"]
 publishedAt: "2025년 3월 13일"
 updatedAt: "2025년 3월 13일"
-isPublished: false
+isPublished: true
 ---
 
 ## 여는 글
@@ -23,30 +23,317 @@ isPublished: false
 - 개발하는 도중에 API 스펙이 변경되는 경우
 - 등등...
 
-이런 상황에서 더 효율적인 개발, 협업을 가능하게 해주는 API 모킹(mocking) 라이브러리인 `Mock Service Worker, MSW`에 대해 알아볼게요.
+이런 상황에서 더 효율적인 개발, 협업을 하기 위해 API 모킹(mocking) 라이브러리를 도입하려고 해요.  
+API를 모킹하게 되면 응답 결과를 미리 작성하고 실제 API 요청 결과 대신 작성된 응답 결과를 받아 API 개발 일정과 상관없이 개발 할 수 있어요.
 
-`MSW`는 `Service Worker`를 사용해서 네트워크 수준에서 API 요청을 가로채는 API 모킹(mocking) 라이브러리예요.
-기존의 모킹 방식과 다르게 실제 네트워크 요청을 차단하고 모의 응답을 반환하기 때문에, 마치 실제 서버와 통신하는 것처럼 개발을 진행할 수 있어요.
+`msw`는 서비스 워커 API를 사용해서 네트워크 수준에서 API 요청을 가로채는 API 모킹(mocking) 라이브러리 중 하나예요.
 
-> [!note] Service Worker?
+> [!note] Service Worker API?
 > 서비스 워커는 연관된 웹 페이지/사이트를 통제하여 탐색과 리소스 요청을 가로채 수정하고, 리소스를 굉장히 세부적으로 캐싱할 수 있습니다. 이를 통해 웹 앱이 어떤 상황에서 어떻게 동작해야 하는지 완벽하게 바꿀 수 있습니다. (제일 대표적인 상황은 네트워크를 사용하지 못할 때입니다.)
 > [MDN Service Worker API](https://developer.mozilla.org/ko/docs/Web/API/Service_Worker_API)
 
-주요 특징으로는:
+`msw`는 다음과 같은 특징이 있어요:
 
-- 브라우저와 Node.js 환경 모두 지원
-- REST API와 GraphQL 요청 모두 모킹 가능
-- 실제 네트워크 요청과 동일한 개발 경험
+- 브라우저와 Node.js 환경에서 `fetch`, `Axios`, `React Query`와 같은 모든 요청을 모킹할 수 있어요.
+- 서비스 워커 API를 통해 네트워크 수준에서 요청을 가로채기 때문에 실제 서버와 통신하는 것과 동일한 환경에서 개발할 수 있어요.
+- API 모킹을 독립적인 레이어로 처리해서 테스트, Storybook 과 같은 환경에서도 동일한 모킹을 수행할 수 있어요.
+
+이제 이러한 `msw`에 대해 알아보면서 프로젝트에 도입해볼게요.  
+이 글은 다음과 같은 기준으로 작성됐어요:
+
+- `react@19.0.0`
+- `vite@6.2.0`
+- `msw@2.7.3`
+- `ky@1.5.5`
+
+## 초기 설정
+
+### 1. 설치하기
+
+먼저 `msw`를 설치해줄게요.
+
+```bash
+npm install msw@latest --save-dev
+```
+
+브라우저에서 `msw`를 사용하기 위해서는 서비스 워커 API에 등록하는 과정이 필요해요.  
+등록을 위해 다음 명령어를 실행해서 서비스 워커 스크립트 파일인 `mockServiceWorker.js`를 생성할게요.
+
+```bash
+npx msw init public/ --save
+```
+
+### 2. 핸들러 작성하기
+
+`get` 요청 API와 요청을 가로채서 모의 응답을 반환할 핸들러를 작성해볼게요.  
+페이지가 로드되면 서버에서 네비게이션바의 메뉴 구성을 전달받는 `Get` 요청 API를 먼저 작성할게요.
+
+```typescript
+// src/features/navigationbar/api/navigationApi.ts
+import ky from "ky";
+
+interface NavigationResponse {
+  items: NavigationItem[];
+}
+
+type NavigationItem = {
+  id: string;
+  name: string;
+  path: string;
+};
+
+const api = ky.create({
+  prefixUrl: "http://localhost:5173",
+});
+
+export const navigationApi = {
+  getNavigation: () => api.get("navigation").json<NavigationResponse>(),
+};
+```
+
+이제 요청을 가로채서 모의 응답을 반환하는 핸들러를 작성할게요.
+
+```typescript
+// src/features/navigationbar/api/mocks/handlers.ts
+import { http, HttpResponse } from "msw";
+
+export const navigationHandlers = [
+  http.get("/navigation", () => {
+    return HttpResponse.json({
+      items: [
+        {
+          id: "1",
+          name: "Home",
+          path: "/",
+        },
+        {
+          id: "2",
+          name: "Login",
+          path: "/login",
+        },
+        {
+          id: "3",
+          name: "Dashboard",
+          path: "/dashboard",
+        },
+      ],
+    });
+  }),
+];
+```
+
+`msw`에 등록하기 위해 작성한 핸들러들을 모아주는 `handlers.ts` 파일도 추가할게요.
+
+```typescript
+// src/shared/api/mocks/handlers.ts
+// 기작성된 loginHandlers
+import { loginHandlers } from "../../../features/login/api/mocks/handlers";
+import { navigationHandlers } from "../../../features/navigationbar/api/mocks/handlers";
+
+// 작성한 각각의 핸들러를 하나의 handlers로 통합해 export
+export const handlers = [...loginHandlers, ...navigationHandlers];
+```
+
+### 3. msw 환경설정 파일 생성
+
+`msw`를 어떤 환경(브라우저, Node.js)에서 사용할지 결정해줘야 하는데, 우리는 브라우저 환경에서 사용할 수 있도록 설정할게요.
+먼저 모든 핸들러를 모아서 관리하는 `handlers.ts` 파일과 브라우저 환경 설정을 위한 `browser.ts` 파일을 만들어줄게요.
+
+> [!note] MSW 환경 설정 파일
+> MSW는 실행 환경에 따라 다른 설정이 필요해요:
+>
+> - 브라우저 환경: `browser.ts` (setupWorker 사용)
+> - Node.js 환경: `node.ts` (setupServer 사용)
+>
+> 환경 설정 파일은 프로젝트당 각각 하나씩만 있으면 돼요.
+
+브라우저 환경을 위한 `browser.ts` 파일은 이렇게 작성해요.
+
+```typescript
+// src/shared/api/mocks/browser.ts
+import { setupWorker } from "msw/browser";
+import { handlers } from "./handlers";
+
+export const worker = setupWorker(...handlers);
+```
+
+Node.js 환경을 위한 `node.ts` 파일은 이렇게 작성해요.
+
+```typescript
+// src/shared/api/mocks/node.ts
+import { setupServer } from "msw/node";
+import { handlers } from "./handlers";
+
+export const server = setupServer(...handlers);
+```
+
+이제 애플리케이션의 진입점에 `msw` 활성화를 위한 코드를 추가해줄게요.  
+현재 프로젝트에서는 `main.tsx`이지만 `index.tsx`, `app.tsx` 등의 진입점에 추가하면 돼요.
+
+```tsx
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+
+import Router from "./ui/Router.tsx";
+
+import "./global.css.ts";
+
+// msw 활성화 코드 작성
+if (process.env.NODE_ENV === "development") {
+  if (typeof window === "undefined") {
+    const { server } = await import("../shared/api/mocks/node");
+    server.listen();
+  } else {
+    const { worker } = await import("../shared/api/mocks/browser");
+    worker.start();
+  }
+}
+
+createRoot(document.getElementById("root")!).render(
+  <StrictMode>
+    <Router />
+  </StrictMode>
+);
+```
+
+작성한 `msw` 활성화 코드에 대해서 자세히 살펴볼게요.
+
+```typescript
+if (process.env.NODE_ENV === "development") {
+  // MSW 활성화 코드
+}
+```
+
+이 코드는 현재 애플리케이션이 개발 환경에서 실행되는지 확인하는 조건문이에요.
+
+`Node.js`환경에서 환경 변수에 접근할 수 있게 해주는 `process.env` 객체를 통해 현재 어떤 환경인지 확인할 수 있는데,
+`Vite`, `Next.js`와 같은 개발 도구는 `npm run dev`와 같은 명령어를 실행할 때 `NODE_ENV`의 값을 `development`로 설정해요.
+
+그래서 작성한 코드는 개발환경에서만 `msw`를 활성화해서 API 요청을 가로채고 그 외의 경우에는 비활성화하는 코드라고 볼 수 있어요.
+
+```typescript
+if (typeof window === "undefined") {
+  // 서버 환경 (SSR)
+} else {
+  // 브라우저 환경 (CSR)
+}
+```
+
+현재 애플리케이션 실행 환경이 `development` 개발 환경인 것을 확인한 뒤에, 서버(SSR) 환경인지 브라우저(CSR) 환경인지 확인해야하는데,
+그 이유는 `msw` 에서는 각 실행 환경별로 다른 API를 사용하기 때문이에요.
+
+SSR인 경우에서는 `window` 객체가 존재하지 않기 때문에 `window === "undefined"`가 성립되고 반대로,
+브라우저 환경에서는 `window` 객체가 항상 존재해서 `false`가 성립하기 때문에 이 조건문을 사용해 환경에 맞는 API를 호출할 수 있어요.
+
+> [!note] window 객체
+> Window 인터페이스는 DOM 문서를 담은 창을 나타냅니다. document 속성이 창에 불러온 DOM 문서를 가리킵니다. [MDN Window](https://developer.mozilla.org/ko/docs/Web/API/Window)
+>
+> > `Window` 객체는 브라우저에 존재하는 자바스크립트의 최상위 객체로 `DOM`을 포함하고 있어요.  
+> > SSR은 서버의 `Node.js` 환경에서 컴포넌트를 통해 HTML 생성해 브라우저로 전달해서 `DOM`트리를 만드는데, 코드가 실행될 때 브라우저 환경이 아니기 때문에 `Window` 객체는 이 시점에 존재할 수 없어요.
+> > 그래서 이 코드를 통해 현재 실행 환경이 서버인지 브라우저인지 확인할 수 있게 돼요.
+
+이제 각 환경에서 동작하는 `msw`의 API를 추가해 볼게요.
+
+#### 서버(Node.js) 환경
+
+```typescript
+const { server } = await import("../shared/api/mocks/node");
+server.listen();
+```
+
+`server`는 `src/api/mocks/node.ts`에서 import 해온 `setUpServer(...handlers)`예요.  
+풀어서 보면 `setUpServer(...handlers).listen()`으로 볼 수 있어요.
+
+`setUpServer`는 인자로 받은 핸들러들은 감시할 요청을 설정하는 함수고 `listen()`은 등록된 핸들러의 HTTP 요청을 가로채기를 시작하는 메서드예요.
+
+#### 브라우저 환경
+
+```typescript
+const { worker } = await import("../shared/api/mocks/browser");
+worker.start();
+```
+
+`worker`는 `src/api/mocks/browser.ts`에서 import 해온 `setUpWorker(...handlers)`예요.  
+풀어서 보면 `setUpWorker(...handlers).start()`로 볼 수 있어요.
+
+`setUpWorker`는 인자로 받은 핸들러들은 감시할 요청을 설정하는 함수고 `start()`는 서비스 워커를 활성화해 등록된 핸들러의 HTTP 요청을 가로채기를 시작하는 메서드예요.
+
+이렇게 해서 각 환경에 맞게 `msw` 설정을 완료했고, 콘솔창을 확인해보면 `[MSW] Mocking enabled` 라는 메세지를 볼 수 있어요.
+
+<MDXImage
+  src="/posts/msw/msw-enabled.png"
+  width="200px"
+  alt="msw 설정 완료시 콘솔창"
+  caption="msw 설정 완료시 콘솔창"
+/>
+
+## 사용하기
+
+이제 메인 페이지에 접속했을때, 네비게이션바 구성 메뉴를 가져오는 `Get` API를 통해 `msw`가 요청을 잘 가로채는지 확인해볼게요.
+이 프로젝트에서는 `Tanstack Query`를 사용하기 때문에 `useQuery`로 감싸 서버 데이터를 관리할 수 있도록 할게요.
+
+```tsx
+// src/feature/navigationbar/model/useNavigation.ts
+import { useQuery } from "@tanstack/react-query";
+import { navigationApi } from "../api/navigationApi";
+
+export const useNavigation = () => {
+  return useQuery({
+    queryKey: ["navigation"],
+    queryFn: navigationApi.getNavigation,
+  });
+};
+```
+
+이제 컴포넌트에서 API를 호출해볼게요.
+
+```tsx
+// src/feature/navigationbar/ui/Navigationbar.tsx
+import { NavLink } from "react-router-dom";
+import { container, activeLink } from "./Navigationbar.css";
+import { useNavigation } from "../model/useNavigation";
+
+export default function Navigationbar() {
+  const { data, isLoading, error } = useNavigation();
+
+  if (isLoading) return <div>로딩 중...</div>;
+  if (error) return <div>오류 발생!</div>;
+
+  return (
+    <nav className={container}>
+      {data?.items?.map((item) => (
+        <NavLink
+          key={item.id}
+          to={item.path}
+          className={({ isActive }) => (isActive ? activeLink : "")}
+        >
+          {item.name}
+        </NavLink>
+      ))}
+    </nav>
+  );
+}
+```
+
+이제 네비게이션바의 구성 요소를 서버 통신과 같은 방식으로 요청해서 모의 응답을 통해 개발 할 수 있게 되었어요.
+
+<MDXImage
+  src="/posts/msw/msw-get-200.png"
+  alt="msw 설정 완료시 콘솔창"
+  caption="msw 설정 완료시 콘솔창"
+/>
+
+나중에 실제 API가 개발되면 별도의 코드 수정 없이 `src/shared/api/mocks/handlers.ts`에 등록했던 핸들러만 제거하면 실제 API 요청으로 대체되기 때문에 아주 편리하게 전환할 수 있어요.
+
+그리고 또한 `main.tsx`에 작성한 `if (process.env.NODE_ENV === "development")` 조건문 덕분에 배포 환경에서도 실제 API 요청이 이루어지게 돼요.
 
 ## 닫는 글
 
-효율적인 개발을 위해 MSW를 프로젝트에 도입해보았는데 겪었던 일정관리에 대한 불편을 줄여줄 뿐만 아니라, 개발 경험에서도 여러가지 측면이 개선되었다는 생각이 들었어요.
-
-- API 개발 작업이 선행되지 않아도 병렬적으로 프론트엔드 개발 진행 가능
-- 다양한 API 응답 상황에 대한 테스트 가능
-- 백엔드 서버 상태와 무관한 개발 환경 유지
+효율적인 개발 일정과 협업을 위해 MSW를 프로젝트에 도입해보았는데 겪었던 일정관리에 대한 불편을 줄여줄 수 있는 좋은 프론트엔드 도구라고 느꼈어요.  
+백엔드 팀과의 협업이 많거나 API 때문에 개발 일정이 지연 혹은 중단된 경험이 있는 프론트엔드 개발자라면 `msw` 도입을 적극 추천해요.
 
 ## 출처
 
 https://mswjs.io/docs/getting-started  
+https://oliveyoung.tech/2024-01-23/msw-frontend/  
 https://velog.io/@khy226/msw%EB%A1%9C-%EB%AA%A8%EC%9D%98-%EC%84%9C%EB%B2%84-%EB%A7%8C%EB%93%A4%EA%B8%B0
