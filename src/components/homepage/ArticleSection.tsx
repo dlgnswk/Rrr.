@@ -1,5 +1,4 @@
 import { Post } from "@/types/posts";
-import { Separator } from "@/components/ui/separator";
 import Arrow from "./arrow";
 
 interface ArticleSectionProps {
@@ -28,7 +27,9 @@ export default function ArticleSection({
         </div>
       </div>
       <p className="text-2xl font-light">{post.description}</p>
-      {index !== posts.length - 1 && <Separator className="my-6 bg-black" />}
+      {index !== posts.length - 1 && (
+        <div className="shrink-0 w-full h-[1px] my-6 bg-black" />
+      )}
     </section>
   );
 }
