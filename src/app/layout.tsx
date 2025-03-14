@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { Providers } from "./Providers";
 import { Analytics } from "@vercel/analytics/react";
+import Script from "next/script";
 
 const honerThose = localFont({
   src: "./fonts/honer-those.otf",
@@ -32,6 +33,24 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <Script
+          strategy="afterInteractive"
+          src="https://www.googletagmanager.com/gtag/js?id=G-BRBGYK6RRT"
+        />
+        <Script
+          id="google-analytics"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-BRBGYK6RRT');
+            `,
+          }}
+        />
+      </head>
       <body
         className={`${honerThose.variable} ${freesentation.variable} antialiased min-h-screen w-screen`}
         suppressHydrationWarning
