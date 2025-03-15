@@ -3,19 +3,11 @@
 import { MDXRemote } from "next-mdx-remote";
 import type { MDXRemoteSerializeResult } from "next-mdx-remote";
 import { Suspense } from "react";
-import MDXImage from "./MDXImage";
+import MDXImage from "@/shared/ui/mdx/MDXImage";
 
 const components = {
   MDXImage,
 };
-
-function MDXRenderer({ source }: { source: MDXRemoteSerializeResult }) {
-  return (
-    <div className="prose prose-h1:text-4xl prose-h2:text-3xl max-w-none mt-[60px]">
-      <MDXRemote {...source} components={components} />
-    </div>
-  );
-}
 
 export default function MDXContent({
   source,
@@ -24,7 +16,9 @@ export default function MDXContent({
 }) {
   return (
     <Suspense fallback={<div>로딩 중...</div>}>
-      <MDXRenderer source={source} />
+      <div className="prose prose-h1:text-4xl prose-h2:text-3xl max-w-none mt-[60px]">
+        <MDXRemote {...source} components={components} />
+      </div>
     </Suspense>
   );
 }

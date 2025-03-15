@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 
-const MainButton = () => {
+export default function HomePageButton() {
   const router = useRouter();
 
   const handleClick = () => {
@@ -19,6 +19,4 @@ const MainButton = () => {
       </button>
     </div>
   );
-};
-
-export default MainButton;
+}

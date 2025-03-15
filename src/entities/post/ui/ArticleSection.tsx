@@ -1,5 +1,5 @@
-import { Post } from "@/types/posts";
-import Arrow from "./arrow";
+import { Post } from "@/entities/post/model/types";
+import Arrow from "../../../shared/ui/icons/ArrowIcon";
 
 interface ArticleSectionProps {
   post: Post;

@@ -1,15 +1,15 @@
 "use client";
 
-import Profile from "@/components/[slug]/profile";
-import { Post } from "@/types/posts";
+import Profile from "@/shared/ui/icons/ProfileIcon";
+import { Post } from "@/entities/post/model/types";
 import dynamic from "next/dynamic";
 
-const MDXContent = dynamic(() => import("@/components/mdx/MDXContent"), {
+const MDXContent = dynamic(() => import("@/entities/mdx/ui/MDXContent"), {
   ssr: false,
   loading: () => <div>로딩 중...</div>,
 });
 
-export default function PostContent({ post }: { post: Post }) {
+export default function PostPageContent({ post }: { post: Post }) {
   return (
     <article className="flex flex-col w-full gap-3 mb-[100px] mt-8">
       <div className="flex flex-col w-full">

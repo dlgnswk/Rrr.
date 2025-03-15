@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 
-const HomepageTitle = () => {
+export default function HomePageTitle() {
   const router = useRouter();
 
   const handleClick = () => {
@@ -17,6 +17,4 @@ const HomepageTitle = () => {
       Rrr.
     </h1>
   );
-};
-
-export default HomepageTitle;
+}

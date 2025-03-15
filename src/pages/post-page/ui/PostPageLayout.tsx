@@ -1,4 +1,4 @@
-export default function PostpageLayout({
+export default function PostPageLayout({
   children,
 }: {
   children: React.ReactNode;

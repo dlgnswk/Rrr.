@@ -1,14 +1,13 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import {
   TagLineCircle,
   TagLineRectangle,
   TagSolidCircle,
   TagSolidRectangle,
-} from "./Tags";
-import { useState, useEffect } from "react";
+} from "@/shared/ui/tags/Tags";
 
-// 가능한 태그 컴포넌트들을 배열로 정의
 const TAG_COMPONENTS = [
   TagLineCircle,
   TagLineRectangle,
@@ -21,7 +20,6 @@ export default function TagList({ tags }: { tags: string[] }) {
   const [componentIndexes, setComponentIndexes] = useState<number[]>([]);
 
   useEffect(() => {
-    // 클라이언트 사이드에서만 랜덤 값을 생성
     setComponentIndexes(
       tags.map(() => Math.floor(Math.random() * TAG_COMPONENTS.length))
     );
@@ -29,7 +27,6 @@ export default function TagList({ tags }: { tags: string[] }) {
   }, [tags]);
 
   if (!mounted) {
-    // 초기 서버 렌더링시에는 첫 번째 컴포넌트로 통일
     return (
       <div className="flex gap-1 w-[80%] justify-center flex-wrap mb-16 mx-auto">
         {tags.map((tag) => (

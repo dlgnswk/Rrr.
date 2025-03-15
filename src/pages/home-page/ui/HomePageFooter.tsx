@@ -1,4 +1,4 @@
-export default function HomepageFooter() {
+export default function HomePageFooter() {
   return (
     <footer className="w-full flex justify-center mt-auto py-4">
       <p className="text-sm">

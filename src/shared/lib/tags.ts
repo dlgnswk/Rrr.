@@ -1,4 +1,4 @@
-import { Post } from "@/types/posts";
+import { Post } from "@/entities/post/model/types";
 
 export const getTags = (posts: Post[]) => {
   const tagSet = new Set<string>();

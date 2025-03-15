@@ -1,4 +1,4 @@
-export default function HomepageLayout({
+export default function HomePageLayout({
   children,
 }: {
   children: React.ReactNode;
