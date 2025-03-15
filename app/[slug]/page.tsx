@@ -1,31 +1,27 @@
-import PostpageLayout from "@/components/[slug]/PostpageLayout";
-import PostContent from "@/app/[slug]/PostContent";
-import { getAllPosts } from "@/utils/mdx";
-import MainButton from "@/components/[slug]/MainButton";
+import PostPage from "@/pages/post-page/ui/PostPage";
+import getAllPosts from "@/shared/api/mdx/getAllPosts";
+import getPostBySlug from "@/shared/api/mdx/getPostBySlug";
 
 type Params = Promise<{ slug: string }>;
 
-export default async function PostPage({ params }: { params: Params }) {
+export default async function PostPageContainer({
+  params,
+}: {
+  params: Params;
+}) {
   const { slug } = await params;
-  const posts = await getAllPosts();
-  const post = posts.find((post) => post.slug === slug);
+  const post = await getPostBySlug(slug);
 
   if (!post) {
     return <div>Post not found</div>;
   }
 
-  return (
-    <PostpageLayout>
-      <MainButton />
-      <PostContent post={post} />
-    </PostpageLayout>
-  );
+  return <PostPage post={post} />;
 }
 
 export async function generateMetadata({ params }: { params: Params }) {
   const { slug } = await params;
-  const posts = await getAllPosts();
-  const post = posts.find((post) => post.slug === slug);
+  const post = await getPostBySlug(slug);
 
   if (!post) {
     return {
