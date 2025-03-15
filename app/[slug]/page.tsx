@@ -1,4 +1,4 @@
-import PostPage from "@/pages/post-page/ui/PostPage";
+import PostPage from "@/views/post-page/ui/PostPage";
 import getAllPosts from "@/shared/api/mdx/getAllPosts";
 import getPostBySlug from "@/shared/api/mdx/getPostBySlug";
 
