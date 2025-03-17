@@ -369,6 +369,7 @@ export default function NavigationBar() {
       >
         Home
       </NavLink>
+      // ...
     </nav>
   );
 }
@@ -408,10 +409,152 @@ export default function NavigationBar() {
       >
         Home
       </NavLink>
+      // ...
     </nav>
   );
 }
 ```
+
+<p> </p>
+
+<MDXImage
+  src="/posts/vanilla-extract/before_globalstyle.png"
+  width="300px"
+  alt="Vanilla Extract로 적용한 CSS"
+  caption="Vanilla Extract로 적용한 CSS"
+/>
+
+## 전역 변수 설정하기
+
+Vanilla Extract의 `createGlobalTheme` 메서드를 이용해서 설정할 수 있어요.
+
+```typescript
+const vars = createGlobalTheme(":root", {
+  colors: {
+    white: "#FFFFFF",
+  },
+});
+```
+
+위와 같이 작성하면 `root`에 `vars.color.white`를 `#FFFFFF`로 적용하게 돼요.
+
+이제 적용할 컬러 토큰을 `global.css.ts`에서 전역 변수를 설정해볼게요.
+
+```tsx
+// global.css.ts
+import "./layers.css";
+import "./reset.css";
+
+export const vars = createGlobalTheme(":root", {
+  colors: {
+    gray: {
+      10: "#F7F7F9",
+      20: "#E5E5EA",
+      // ...
+    },
+    blue: {
+      10: "#EDF0FF",
+      20: "#C5D0FF",
+      // ...
+    },
+    // ...
+  },
+});
+```
+
+설정한 전역 변수를 스타일에서 적용해볼게요.
+
+```tsx
+import { style } from "@vanilla-extract/css";
+import { vars } from "../../../app/global.css";
+
+export const container = style({
+  display: "flex",
+  padding: "16px",
+  gap: "16px",
+  backgroundColor: vars.colors.gray[70],
+});
+
+export const activeLink = style({
+  color: vars.colors.blue[50],
+});
+```
+
+`container`의 `backgroundColor`를 `vars.colors.gray[70]`인 `#636366`를 적용했고,  
+`activeLink`의 `color`를 `vars.colors.blue[50]`인 `#457AFF`를 적용했어요.
+
+<MDXImage
+  src="/posts/vanilla-extract/after_globalstyle.png"
+  width="300px"
+  alt="createGlobalTheme로 적용한 글로벌 스타일"
+  caption="createGlobalTheme로 적용한 글로벌 스타일"
+/>
+
+## 폰트 설정하기
+
+프로젝트에서 사용하는 전역 폰트 설정을 해볼게요.  
+지금 프로젝트에서는 `pretendard`를 사용하기 때문에 `public/fonts/PretendardVariable.woff2`에 파일을 넣어주었어요.
+
+이제 `text.css.ts` 파일을 생성해줄게요. 전역 폰트 설정은 [`globalFontFace()`](https://vanilla-extract.style/documentation/global-api/global-font-face/) 메서드를 사용할게요.
+
+```tsx
+import { globalFontFace, globalStyle } from "@vanilla-extract/css";
+
+const pretendardFont = "Pretendard";
+
+globalFontFace(pretendardFont, {
+  src: 'url("/fonts/Pretendard-Regular.woff2") format("woff2")',
+  fontWeight: "400 900",
+  fontStyle: "normal",
+});
+
+globalStyle("body", {
+  "@layer": {
+    base: {
+      fontFamily: pretendardFont,
+    },
+  },
+});
+```
+
+`globalFontFace` 메서드는 다음과 같은 CSS를 생성해요.
+
+```css
+@font-face {
+  src: "/fonts/Pretendard-Regular.woff2";
+  font-family: pretendardFont;
+}
+```
+
+`globalStyle` 메서드는 위에서 정의한 폰트 패밀리의 `pretendardFont`를 `body`에 적용해줘요.  
+이제 `global.css.ts`에 `text.css`를 import 해주면 돼요.
+
+```typescript
+import { createGlobalTheme } from "@vanilla-extract/css";
+import "./layers.css";
+import "./reset.css";
+import "./text.css"; // 추가
+
+// ...
+```
+
+<p> </p>
+
+<MDXImage
+  src="/posts/vanilla-extract/before_font.png"
+  width="500px"
+  alt="localhost:5173/"
+  caption="전역 폰트 적용 전"
+/>
+
+<p> </p>
+
+<MDXImage
+  src="/posts/vanilla-extract/after_font.png"
+  width="500px"
+  alt="localhost:5173/"
+  caption="전역 폰트 적용 후"
+/>
 
 ## 닫는 말
 
