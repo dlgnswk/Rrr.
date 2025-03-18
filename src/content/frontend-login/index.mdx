@@ -1,0 +1,60 @@
+---
+title: "프론트엔드에서의 로그인 구현"
+titleStyle:
+  - text: "프론트엔드"
+    isBold: true
+  - text: "에서의 "
+    isBold: false
+  - text: "로그인"
+    isBold: true
+  - text: " 구현"
+    isBold: false
+description: "프론트엔드에서 로그인 인증을 구현하는 여러 방식에 대해 알아봤어요."
+category: "frontend"
+tags: ["authentication"]
+publishedAt: "2025년 3월 18일"
+updatedAt: "2025년 3월 18일"
+isPublished: false
+---
+
+## 여는 글
+
+웹 프론트엔드 개발을 하면서 피할 수 없는 기능중의 하나는 로그인 기능이에요.
+
+여러 프로젝트에서 로그인 기능을 구현해봤지만 매번 로그인 기능 구현이 쉽지 않았는데, 로그인 인증 방식은 다양하기도 하고 보안과 관련한 요소들이 많았기 때문이에요.
+
+이 글에서는 로그인 기능을 위해 많이 사용되는 인증 방식과 프론트엔드에서는 어떠한 방식으로 대응할 수 있는지 알아보고 정리해보려고 해요.
+
+## JWT 인증
+
+[`JWT`](https://datatracker.ietf.org/doc/html/rfc7519) 인증은 `JSON Web Token`의 약자로 `JSON` 객체에 인증에 필요한 정보(`claims`)를 담아 비밀키로 서명한 토큰을 말해요.
+
+여기서 말하는 정보(`claims`)는 사용자 아이디, 권한, 만료 시간 등 토큰에 포함되는 다양한 정보를 의미해요. 사용자가 로그인을 요청하면 서버는 이런 정보들을 JWT에 담아 클라이언트에 전달합니다.
+
+JWT는 두 가지 주요 형태로 구현될 수 있는데 디지털 서명을 통해 토큰을 검증하는 `JWS`(JSON Web Signature)와, 데이터를 암호화해 정보를 숨길 수 있는 `JWE`(JSON Web Encryption)가 있어요.
+
+### 프로세스
+
+`JWT`를 이용한 로그인, 사용자 인증의 큰 흐름은 다음과 같아요.
+
+1. 클라이언트에서 사용자가 로그인을 시도하면 아이디, 비밀번호를 서버로 **요청**을 보내요.
+2. 서버는 전달받은 아이디, 비밀번호가 **유효**하다면 `secret key`를 통해 `JWT`를 **발급**하고 클라이언트로 전달해요.
+3. 클라이언트는 전달받은 `JWT`를 **저장**하고 이후 API를 호출할 때 마다 `header`에 `JWT`를 담아 보내 서버가 사용자를 인증 할 수 있도록 해요.
+
+이제 키워드를 하나씩 자세히 알아볼게요.
+
+#### <u>요청</u>
+
+클라이언트에서 `post` 요청으로 `body`에 사용자가 입력한 아이디와 비밀번호를 보내는 과정이에요.  
+`axios`를 사용한 간단한 예시를 작성해볼게요.
+
+```typescript
+await axios.post("/auth/login");
+```
+
+## 닫는 글
+
+## 출처
+
+https://velog.io/@chuu1019/알고-쓰자-JWTJson-Web-Token  
+https://datatracker.ietf.org/doc/html/rfc7519
