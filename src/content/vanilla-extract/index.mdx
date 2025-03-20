@@ -20,7 +20,7 @@ isPublished: true
 `Tailwind CSS`를 사용하면서 느낀 고질적인 낮은 가독성과 유지보수와 재사용성을 고려한 스타일과 컴포넌트의 관심사 분리 등 여러 이유로
 `Vanilla Extract`를 도입하기로 했어요.
 
-## 여는 말
+## 여는 글
 
 `Vanilla Extract`는 [공식 문서](https://vanilla-extract.style/)에서 다음과 같이 소개하고 있어요.
 
@@ -556,7 +556,105 @@ import "./text.css"; // 추가
   caption="전역 폰트 적용 후"
 />
 
-## 닫는 말
+## CSS 선택자 사용하기
+
+Vanilla Extract 에서는 [`Selectors`](https://vanilla-extract.style/documentation/styling/#selectors) 메서드를 통해 CSS 선택자를 작성할 수 있어요.
+
+> 주요 선택자
+> `:` 콜론 - 의사 클래스 선택자
+> `&` 앰퍼샌드 - 현자 선택자 참조
+> `+` 플러스 - 인접 형제 선택자
+> `~` 틸드 - 형제 선택자
+
+CSS 선택자를 이용해 스타일을 추가할 컴포넌트를 먼저 생성해줄게요.
+
+```tsx
+import { container } from "./TestInput.css";
+
+export default function TestInput() {
+  return (
+    <div className={container}>
+      <label>테스트</label>
+      <input type="checkbox" />
+    </div>
+  );
+}
+```
+
+이제 스타일을 적용할게요.
+
+```typescript
+import { style } from "@vanilla-extract/css";
+
+export const container = style({
+  display: "flex",
+  alignItems: "center",
+  border: "2px solid black",
+  padding: "10px",
+  borderRadius: "6px",
+  gap: "10px",
+});
+```
+
+<MDXImage
+  src="posts/vanilla-extract/default.png"
+  width="300px"
+  alt="스타일을 적용한 컴포넌트"
+  caption="스타일을 적용한 컴포넌트"
+/>
+
+사용방법은 다음과 같아요:
+
+1. 의사 클래스
+
+```typescript
+import { style } from "@vanilla-extract/css";
+
+export const container = style({
+  ":hover": {
+    backgroundColor: "black",
+    color: "white",
+  },
+});
+```
+
+<MDXImage
+  src="posts/vanilla-extract/hover.png"
+  width="300px"
+  alt=":hover"
+  caption=":hover"
+/>
+
+Vanilla Extract 에서 CSS 선택자는 `:`로만 시작해야 하기 때문에 간단한 의사 클래스만 작성할 수 있어요.
+
+2. 복잡한 선택자
+
+만약 복잡한 선택자를 사용하고 싶다면, `Selectors` 메서드 내부에 선택자를 작성할 수 있어요.
+
+```typescript
+import { style } from "@vanilla-extract/css";
+
+export const container = style({
+  display: "flex",
+  alignItems: "center",
+  gap: "8px",
+
+  selectors: {
+    [`&:has(${input}:checked)`]: {
+      backgroundColor: "yellow",
+    },
+  },
+});
+```
+
+<MDXImage
+  src="posts/vanilla-extract/checked.png"
+  width="300px"
+  alt="&:has(input:checked)"
+  caption="&:has(input:checked)"
+/>
+
+## 닫는 글
 
 이렇게 해서 간단하게 `Vanilla Extract`를 적용해보았는데 사용해보지 않은 기능들이 많지만 스타일을 따로 관리하는 방식이 `Tailwind CSS`보다 훨씬 깔끔하고 개발 친화적으로 느껴졌고,
 타입스크립트를 통한 정적 타입 검사와 스타일 자동완성 기능도 좋은점으로 느껴지게 많드는 기능중에 하나였어요.
@@ -566,6 +664,7 @@ import "./text.css"; // 추가
 ## 출처
 
 https://vanilla-extract.style/  
+https://developer.mozilla.org/ko/docs/Web/CSS/Pseudo-classes  
 https://bepyan.github.io/blog/2022/css-in-js  
 https://5ceanward.tistory.com/38  
 https://velog.io/@thewronghand/1024-from-tailwind-to-vanilla-extract-마이그레이션-후기
