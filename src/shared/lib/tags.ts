@@ -9,5 +9,5 @@ export const getTags = (posts: Post[]) => {
     });
   });
 
-  return Array.from(tagSet);
+  return Array.from(tagSet).sort((a, b) => a.localeCompare(b));
 };
