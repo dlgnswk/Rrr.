@@ -3,6 +3,7 @@ import path from "path";
 import matter from "gray-matter";
 import { Post } from "@/entities/post/model/types";
 import { postsDirectory, serializeMDX } from "./utils";
+import { parseKoreanDate } from "@/shared/lib/dates";
 
 export default async function getAllPosts(): Promise<Post[]> {
   const slugs = fs.readdirSync(postsDirectory);
@@ -22,9 +23,10 @@ export default async function getAllPosts(): Promise<Post[]> {
       } as Post;
     })
   );
-
+  console.log(posts);
   return posts.sort(
     (a, b) =>
-      new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
+      new Date(parseKoreanDate(b.updatedAt)).getTime() -
+      new Date(parseKoreanDate(a.updatedAt)).getTime()
   );
 }
