@@ -11,16 +11,17 @@ export const TAG_COMPONENT_MAP: Record<
   string,
   React.ComponentType<{ tag: string }>
 > = {
+  algorithm: TagLineRectangle,
   browser: TagSolidCircle,
-  CSS: TagLineRectangle,
-  "Design Pattern": TagSolidRectangle,
-  FSD: TagLineCircle,
-  javascript: TagLineRectangle,
+  CSS: TagSolidRectangle,
+  "Design Pattern": TagLineCircle,
+  FSD: TagSolidRectangle,
+  javascript: TagSolidCircle,
   MSW: TagSolidRectangle,
   "Next.js": TagLineRectangle,
-  React: TagSolidCircle,
+  React: TagLineCircle,
   "React Router": TagLineRectangle,
-  Storybook: TagSolidCircle,
+  Storybook: TagLineCircle,
 };
 
 export const getTagComponent = (tag: string) => {
