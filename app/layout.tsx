@@ -52,7 +52,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${honerThose.variable} ${freesentation.variable} antialiased min-h-screen w-screen`}
+        className={`${honerThose.variable} ${freesentation.variable} antialiased`}
         suppressHydrationWarning
       >
         <Providers>{children}</Providers>
