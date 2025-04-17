@@ -19,8 +19,9 @@ export const TAG_COMPONENT_MAP: Record<
   javascript: TagSolidCircle,
   MSW: TagSolidRectangle,
   "Next.js": TagLineRectangle,
-  React: TagLineCircle,
-  "React Router": TagLineRectangle,
+  python: TagSolidCircle,
+  React: TagSolidRectangle,
+  "React Router": TagLineCircle,
   Storybook: TagLineCircle,
 };
 
