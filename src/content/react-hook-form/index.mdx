@@ -1,0 +1,555 @@
+---
+title: "React Hook Form (Feat: Zod)"
+titleStyle:
+  - text: "React Hook Form"
+    isBold: true
+  - text: "으로 폼 구현하기"
+    isBold: false
+description: "React Hook Form으로 폼을 구현했어요."
+category: "frontend"
+tags: ["React"]
+publishedAt: "2025년 4월 11일"
+updatedAt: "2025년 4월 11일"
+isPublished: true
+---
+
+## 여는 말
+
+최근 회원가입 카드, 검색 패널 등 `form`을 사용해야 하는 컴포넌트를 구현해야 했었는데,
+레거시 코드를 찾아보던 중에 `React Hook Form`으로로 구현한 `form` 컴포넌트를 보게 됐어요.
+
+`React Hook form`를 통해 효율적인 `form`을 구현하기 위해 공식문서에서 찾아본 내용을 핵심만 정리해봤어요.
+
+## React Hook form
+
+공식문서에서는 `React Hook form`의 장점으로 다음과 같은 내용들을 언급하고 있어요.
+
+- 개발자들을 위한 직관적이고 완벽한 `form` 관련 기능을 제공해요.
+- HTML 마크업 기반의 유효성 검사를 할 수 있어요.
+- 종송석이 없는 작은 라이브러리예요.
+- 레런더링, 유효성 검사 계산을 최소화해요.
+- 폼의 상태는 로컬이기 때문에 다른 의존성 없이 쉽게 사용할 수 있어요.
+- 일관된 유효성 검사로 최고의 사용자 경험을 제공해요.
+
+이런 장점들과 현재 프로젝트의 기술 스택이 잘 맞는다고 판단해 `React Hook Form`을 도입하게 됐어요.
+
+`React hook form`은 `form`을 위한 여러 API를 제공하는데, 그 중에서 `form`의 유효성 검사를 추가할 수 있는 `useForm` 훅에 대해 알아볼게요.
+
+## useForm
+
+`useForm()`은 커스텀 훅으로 입력받은 인수로 하나의 객체를 반환 받아 유효성 검사와 관련된 다양한 기능을 사용해게 해줘요.
+
+```typescript
+import { useForm } from "react-hook-form";
+
+const { register, formState, watch, handleSubmit, setValue, getValues } =
+  useForm();
+```
+
+자주 사용되는 반환값을 하나씩 살펴볼게요.
+
+### 1. register
+
+`register`는 `input`이나 `select`와 같은 필드를 키-값 쌍의 객체 형태로 저장해요.  
+`React Hook Form`은 HTML의 폼 validation을 기반으로 하기 때문에 다음과 같은 유효성 룰을 사용할 수 있어요.
+
+```tsx
+// {name: value} 형태로 저장
+<input {...register("name")}
+```
+
+<p> </p>
+
+- `required` : 필수 여부를 지정해요.
+
+```tsx
+// required
+// 폼을 제출하기 위한 필수조건으로 설정
+<input {...register("name", {required: true})}
+```
+
+<p> </p>
+
+- `min`, `max` : 숫자 형태의 최소, 최대값을 지정해요.
+
+```tsx
+// min, max
+// 숫자의 최소 값을 설정
+<input {...register("age", {"min: 19"})}
+```
+
+<p> </p>
+
+- `minLength`, `maxLength` : 문자 형태의 최소, 최대 길이를 지정해요.
+
+```tsx
+/// minLength, maxLength
+// 문자의 최소 길이 설정
+<input {...register("name", {minLength: 2})}
+```
+
+<p> </p>
+
+- `pattern` : 입력 데이터가 지켜야하는 정규표현식을 지정해요.
+
+```tsx
+/// pattern
+// 정규표현식 설정
+<input
+  {...register("email", {
+    pattern: {
+      value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
+      message: "유효하지 않은 이메일 형식입니다.",
+    },
+  })}
+/>
+```
+
+<p> </p>
+
+- `validate` : 기본 옵션으로는 커버되지 않는 유효성 검사를 지정해요.
+
+```tsx
+/// validate
+// 복잡한 조건 설정
+<input
+  {...register("userName", {
+    validate: {
+      // value가 조건을 통과하지 못할 경우 메세지 출력
+      noSpecialChars: (value) =>
+        /^[a-zA-Z0-9]*$/.test(value) || "특수문자는 사용할 수 없어요.",
+    }
+  })}
+/>
+
+// 비동기 검사
+<input
+  {...register("userName", {
+    //비동기 함수
+    validate: async (value) => {
+      // value가 조건을 통과하지 못할 경우 메세지 출력
+      const isAvaliable = await checkEmailDuplicattion(value);
+      return isAvaliable || "이미 등록된 이메일 이에요.";
+    },
+  })}
+/>
+```
+
+<p> </p>
+
+`register` 메소드의 더 많은 기능은 [**공식문서에서**](https://www.react-hook-form.com/api/useform/register/) 확인할 수 있어요.
+
+### 2. setValue
+
+`setValue`를 통해 등록된 필드의 값을 등록하면 **유효성 검사를 통해 불필요한 리렌더링을 방지**할 수 있어요.
+
+```tsx
+import { useForm } from "react-hook-form";
+
+function MyForm() {
+  const { register, setValue } = useForm({
+    // name 필드의 기본값을 "" 로 설정했어요.
+    defaultValues: { name: "" },
+  });
+
+  const handleClick = () => {
+    // name 필드의 값을 "rrr" 로 설정해요.
+    // 이렇게 변경된 필드는 dirty(수정된) 상태로 변경돼요.
+    setValue("name", "rrr");
+
+    // shoudDirty 를 true로 설정하면 해당 필드를 강제로 dirty 상태로 설정해요.
+    setValue("name", "rrr", { shouldDirty: true });
+
+    // shouldValidate를 세번째 인자로 추가하면 유효성 검사 후 변경해요.
+    setValue("name", "rrr", { shouldValidate: true });
+  };
+
+  return (
+    <div>
+      <input {...register("name")} />
+      <button type="button" onClick={handleClick}>
+        save
+      </button>
+    </div>
+  );
+}
+```
+
+### 3. formState
+
+`formState`는 `form` **상태에 대한 정보를 관리**하는데에 사용돼요.
+
+- `isDirty` : 기본값과 비교해 하나라도 수정된 경우 `true`로 설정돼요.
+
+```tsx
+const {
+  formState: { isDirty, dirtyFields },
+  setValue,
+} = useForm({ defaultValues: { id: "" } });
+
+// isDirty: true
+// 기본값 "" 에서 "rrr"로 변경 되었기 때문
+setValue("id", "rrr");
+
+// isDirty: false
+// 기본값과 같기 때문
+setValue("id", "");
+```
+
+<p> </p>
+
+- `dirtyFields` : 기본값을 제공된 필드와 비교해 사용자가 수정한 필드만 담은 객체에요.
+
+```tsx
+const {
+  formState: { isDirty, dirtyFields },
+  setValue,
+} = useForm({ defaultValues: { id: "" } });
+
+setValue("id", "rrr", { shouldDirty: true });
+
+console.log(dirtyFields);
+// { name: true }
+```
+
+<p> </p>
+
+- `isValid` : `form`이 가지는 전체 필드의 유효성 검사가 통과된 경우 `true`로 설정돼요.
+
+```tsx
+const {
+  register,
+  formState: { isValid },
+// onChange 모드로 change 마다 isValid 상태를 업데이트해요.
+} = useForm({ mode: "onChange" })
+
+...
+return (
+  <form>
+    <input {...register("id")} />
+    <input {...register("password")} />
+    <button
+      type="submit"
+      className={isValid ? "activeLogin" : "disabledLogin"}
+    >
+      로그인
+    </button>
+  </form>
+);
+```
+
+<p> </p>
+
+- `errors` : 유효성 검사에 실패한 필드의 에러 메시지를 담고 있는 객체로 각 필드의 `name` 값으로 접근 가능해요.
+
+```tsx
+const {
+  register,
+  formState: { isValid, errors },
+} = useForm({ mode: "onChange" })
+
+...
+return (
+  <form>
+    <input {...register("id")} />
+    <span>{errors["id"]?.message}</span>
+
+    <input {...register("password")} />
+    <span>{errors["password"]?.message}</span>
+
+    <button
+      type="submit"
+      className={isValid ? "activeLogin" : "disabledLogin"}
+    >
+      로그인
+    </button>
+  </form>
+);
+```
+
+### 3. watch
+
+`watch()` 메서드는 지정된 필드의 값을 **실시간으로 추적**할 수 있어요.  
+입력값의 변경을 감지해서 동적으로 UI나 유효성 검사를 처리할 때 유용해요.
+
+- `watch()` : 인자가 없으면 전체 필드의 현재 값을 반환해요.
+- `watch("id")` : 특정 필드의 값을 실시간으로 추적해요.
+- `watch("id", "기본값")` : 두 번째 인자는 폼이 아직 마운트되기 전에 보여줄 값으로 `fallback` 역할을 수행해요.
+- `watch(["id", "password"])` : 배열 형태로 여러 필드를 동시에 감시할 수 있어요.
+
+실제로는 이렇게 사용할 수 있어요.
+
+```tsx
+const { register, watch } = useForm({
+  defaultValues: {
+    password: "",
+    confirmPassword: "",
+  },
+});
+
+return (
+  <form>
+    <input type="password" {...register("password")} />
+    <input
+      type="password"
+      {...register("confirmPassword", {
+        validate: (value) =>
+          // 입력한 비밀번호 확인 값이 감시 중인 password 필드의 값과 다르면 에러 메시지 반환
+          value === watch("password") || "비밀번호가 일치하지 않아요.",
+      })}
+    />
+  </form>
+);
+```
+
+### 4. getValues
+
+`watch()`는 값이 바뀔 때마다 컴포넌트를 리렌더링시켜 실시간으로 감시하지만, `getValues()`는 **호출 시점**에만 값을 가져와 리렌더링과는 무관하게 동작해요.
+
+비밀번호 확인 시 입력값에 따라 UI를 실시간으로 업데이트해 피드백하는 경우엔 `watch()`를,  
+유효성 검사와 무관하게 현재 값을 가져와야 하는 경우에는 `getValues()`를 사용하면 좋아요.
+
+- `getValues()` : 모든 필드의 값을 가져와요. `return: object`
+- `getValues("name")` : 인자로 전달한 필드의 값만 가져와요. `return: string`
+- `getValues(["name", "id"])` : 배열에 담은 필드들의 값을 가져와요. `return: string[]`
+
+<p> </p>
+
+```tsx
+const handleClick = () => {
+  console.log(getValues());
+  // {name: "reerae", id : "rrr"}
+
+  console.log(getValues("name"));
+  // "reerae"
+
+  console.log(getValues(["name", "id"]));
+  //["reerae", "rrr"]
+};
+
+return (
+  <form>
+    <input {...register("name")} /> {/* reerae 입력 */}
+    <input {...register("id")} /> {/* rrr 입력 */}
+    <button type="button" onClick={handleClick}>
+      click
+    </button>
+  </form>
+);
+```
+
+### 5. handleSubmit
+
+폼 제출시 실행하는 함수로 **유효성 검사를 수행**하고 인자에 넣은 콜백 함수를 실행해요.
+
+`handleSubmit()`은 두개의 인자를 받을 수 있어요.  
+첫번째 인자는 유효성 검사에 통과했을 때 호출되는 콜백함수, 두번째 인자는 실패했을때 호출되는 콜백함수에요.
+
+유효성 검사가 통과되어 호출되는 콜백함수는 각 필드의 입력값을 담은 `data` 객체를 전달받게 돼요.  
+만약 유효성 검사가 실패 될 경우에는 실패된 필드의 에러 메세지로 담은 `errors` 객체를 전달받아요.
+
+```tsx
+const {
+  register,
+  handleSubmit,
+  setFocus,
+  formState: { errors },
+} = useForm();
+
+const onSubmit = (data) => {
+  // 유효성 검사 통과
+  // 등록 API 호출
+  useRegister(data);
+};
+
+const onError = (errors) => {
+  // 유효성 검사 실패
+  // 첫번째 에러 필드에 focus
+  const firstErrorField = Object.keys(errors)[0];
+
+  if (firstErrorField) {
+    setFocus(firstErrorField);
+  }
+};
+
+return (
+  <form onSubmit={handleSubmit(onSubmit, onError)}>
+    <input {...register("id", { required: true })} />
+    <input {...register("password", { required: true })} />
+    <button type="submit">제출</button>
+  </form>
+);
+```
+
+이제 이러한 메소드들을 통해서 UX를 고려한 `form` 로직을 구현할 수 있게 됐어요.  
+지금까지 알아본 기능들을 이용해 동작하는 회원가입 `form`을 한 번 만들어 볼게요.
+
+<MDXImage
+  src="posts/react-hook-form/form.png"
+  width="300px"
+  alt="회원가입 form UI"
+  caption="회원가입 form UI"
+/>
+
+먼저 아이디와 비밀번호 필드는 `register`를 이용한 필수입력과 유효성 검사를 추가했고
+`errors` 메소드를 통해 에러 메세지를 표시할 수 있도록 했어요.
+
+아이디 입력 필드:
+
+```tsx
+<InputWithClear
+  label="아이디"
+  type="text"
+  placeholder="아이디 입력"
+  errorMessage={errors.userId?.message as string}
+  {...register("userId", {
+    required: "아이디를 입력해 주세요.",
+    minLength: { value: 5, message: "아이디는 5자 이상이에요." },
+  })}
+/>
+```
+
+비밀번호, 비밀번호 확인 입력 필드:
+
+```tsx
+<InputWithClear
+  label="비밀번호"
+  type="password"
+  placeholder="비밀번호 입력"
+  errorMessage={errors.password?.message as string}
+  {...register("password", {
+    validate: {
+      required: (value) => value.length >= 8 || "비밀번호는 8자 이상이에요.",
+    },
+  })}
+/>
+<InputWithClear
+  label="비밀번호 확인"
+  type="password"
+  placeholder="비밀번호 확인"
+  errorMessage={errors.passwordCheck?.message as string}
+  {...register("passwordCheck", {
+    required: "비밀번호를 입력해 주세요.",
+    minLength: {
+      value: 8,
+      message: "비밀번호는 8자 이상이에요.",
+    },
+  })}
+/>
+```
+
+이러한 입력 필드에 대한 유효성 검사를 `useForm({ mode: "onChange" })`를 통해 검사하도록 설정했어요.
+
+<MDXImage
+  src="posts/react-hook-form/required.png"
+  width="300px"
+  alt="필수 입력 필드와 에러 메세지"
+  caption="필수 입력 필드와 에러 메세지"
+/>
+
+그리고 비밀번호 확인 필드에는 `validate` 속성을 추가해 `watch("password")` 메서드로 비밀번호 필드의 입력값을 감지해 에러 메세지를 표출하도록 구현했어요.
+
+```tsx
+<InputWithClear
+  label="비밀번호 확인"
+  type="password"
+  placeholder="비밀번호 확인"
+  errorMessage={errors.passwordCheck?.message as string}
+  {...register("passwordCheck", {
+    required: "비밀번호를 입력해 주세요.",
+    minLength: {
+      value: 8,
+      message: "비밀번호는 8자 이상이에요.",
+    },
+    // validate 속성 추가
+    validate: {
+      required: (value) =>
+        value === watch("password") || "비밀번호가 일치하지 않아요.",
+    },
+  })}
+/>
+```
+
+<p> </p>
+
+<MDXImage
+  src="posts/react-hook-form/watch.png"
+  width="300px"
+  alt="watch를 통합 입력필드 감지"
+  caption="watch를 통합 입력필드 감지"
+/>
+
+그리고 `useState`와 같은 `react` 훅과 연결해 비밀번호 중복확인하는 api와 연동할 수 있도록 구현했으며,  
+`trigger`를 통해 검증한 아이디가 변경되었을때 다시 검증할 수 있도록 구현했어요.
+
+```tsx
+const [isIdChecked, setIsIdChecked] = useState(false);
+
+const handleIdCheck = () => {
+  const userId = getValues("userId");
+
+  if (userId.length < 5) return;
+
+  if (userId === "reerae") {
+    setIsIdChecked(false);
+    setError("userId", { message: "이미 사용 중인 아이디에요." });
+    setFocus("userId");
+  } else {
+    setIsIdChecked(true);
+    clearErrors("userId");
+    trigger("userId");
+  }
+};
+
+return (
+  // ...
+  <div className="flex items-end w-full gap-xxs">
+    <InputWithClear
+      label="아이디"
+      type="text"
+      placeholder="아이디 입력"
+      errorMessage={errors.userId?.message as string}
+      {...register("userId", {
+        required: "아이디를 입력해 주세요.",
+        minLength: { value: 5, message: "아이디는 5자 이상이에요." },
+      })}
+    />
+    <Button
+      className="p-3 mb-8 font-medium text-body2"
+      variant="primaryOutline"
+      type="button"
+      onClick={() => handleIdCheck()}
+      disabled={isIdChecked}
+    >
+      중복확인
+    </Button>
+  </div>
+);
+```
+
+<p> </p>
+
+<MDXImage
+  src="posts/react-hook-form/useState.png"
+  width="300px"
+  alt="useState를 통한 아이디 중복 검사 API 호출 및 메세지 표출"
+  caption="useState를 통한 아이디 중복 검사 API 호출 및 메세지 표출"
+/>
+
+이렇게 모든 `validation`, 유효성 검사를 통과하게 되면 `register`의 `isValid` 속성이 `true`값을 가지게 되고,
+`Button` 컴포넌트의 `disabled={!isValid}` 속성을 통해 회원가입 요청을 허용할 수 있도록 구현했어요.
+
+<MDXImage
+  src="posts/react-hook-form/trigger.png"
+  width="300px"
+  alt="모든 유효성 검사를 통과한 form"
+  caption="모든 유효성 검사를 통과한 form"
+/>
+
+## 닫는 글
+
+이렇게 `React hook form`의 여러 API 및 속성에 대해 알아보고 구현까지 해봤는데 사용하지 못한 여러 기능들이 많이 있었어요.
+
+회원가입 같은 단순한 `form` 외에도 다방면으로 활용할 수 있을거라고 생각되네요.
+
+`React Hook Form`과 같은 `form` 관련 라이브러리는 많이 있으니 어떤 방식으로 사용하는지의 큰 흐름을 이히해고 있으면 다른 비즈니스 로직에도 적용할 수 있을것 같아요.
