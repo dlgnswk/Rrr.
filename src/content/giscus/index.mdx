@@ -1,0 +1,205 @@
+---
+title: "블로그에 Giscus 추가하기"
+titleStyle:
+  - text: "블로그에 "
+    isBold: false
+  - text: "Giscus"
+    isBold: true
+  - text: " 추가하기"
+    isBold: false
+description: "블로그에 Giscus를 추가했어요."
+category: "frontend"
+tags: ["javascript"]
+publishedAt: "2025년 4월 23일"
+updatedAt: "2025년 4월 23일"
+isPublished: true
+---
+
+## 여는 글
+
+블로그에 글을 쓰면서 각 post에 댓글 기능을 추가하고 싶었는데 `Giscus`라는 라이브러리를 알게 되었어요.  
+레포지토리의 `discussion`을 기반으로 댓글 기능을 간단하게 추가하는 방법에 대해서 알아볼게요.
+
+## 레포지토리 설정하기
+
+먼저 블로그가 위치한 `Github` 레포지토리의 `Discussion`을 활성화 해줄게요.  
+`Discussion`은 레포지토리 `Settings` - `Features` - `Discussions` 에서 체크박스로 활성화 할 수 있어요.
+
+먼저 `Settings`에 들어간 뒤:
+
+<MDXImage
+  src="posts/giscus/git-setting.png"
+  alt="1. git repository - setting"
+  caption="1. git repository - setting"
+/>
+
+스크롤을 밑으로 내려 `Features` 섹션 하위에 있는 `Discussions`의 체크박스를 체크해주세요.
+
+<MDXImage
+  src="posts/giscus/git-discussion.png"
+  alt="2. setting - features - discussions ✅"
+  caption="2. setting - features - discussions ✅"
+/>
+
+이제 레포지토리에 `discussions` 탭이 추가된걸 확인할 수 있을거에요.
+
+<MDXImage
+  src="posts/giscus/git-discussion-tab.png"
+  alt="추가된 discussions 탭"
+  caption="추가된 discussions 탭"
+/>
+
+## discussions 카테고리 추가하기
+
+이제 `discussions` 탭에 들어가 댓글을 추가할 카테고리를 추가해볼게요.
+
+먼저 카테고리 편집 버튼을 누르고,
+
+<MDXImage
+  src="posts/giscus/add-category.png"
+  alt="카테고리 편집 버튼"
+  caption="카테고리 편집 버튼"
+/>
+
+편집 페이지에서 카테고리 생성 버튼을 클릭해 주세요.
+
+<MDXImage
+  src="posts/giscus/add-new-category.png"
+  alt="카테고리 편집 버튼"
+  caption="카테고리 편집 버튼"
+/>
+
+댓글 카테고리는 다음과 같이 설정했어요.
+
+<MDXImage
+  src="posts/giscus/category-create.png"
+  alt="새로운 카테고리 설정"
+  caption="새로운 카테고리 설정"
+/>
+
+그리고 세개의 카테고리를 제외한 사용하지 않는 다른 카테고리는 정리해줄게요.  
+최종적으로 남길 카테고리는 다음과 같아요.
+
+<MDXImage
+  src="posts/giscus/category-list.png"
+  alt="최종적으로 갖게 되는 세개의 카테고리"
+  caption="최종적으로 갖게 되는 세개의 카테고리"
+/>
+
+## Giscus 설치 및 설정하기
+
+이제 [Giscus 설치 페이지](https://github.com/apps/giscus)에서 레포지토리에 Giscus App을 설치해줄게요.
+
+<MDXImage
+  src="posts/giscus/giscus-app.png"
+  alt="Giscus App 설치 페이지"
+  caption="Giscus App 설치 페이지"
+/>
+
+이 페이지에서 레포지토리에 대한 권한을 설정해준 뒤 `install` 버튼을 눌러 설치해주세요.  
+설치를 완료했다면 [Giscus 설정 페이지](https://giscus.app/ko)로 이동해 설정을 진행해주세요.
+
+다음 이미지처럼 언어를 설정하고 내 블로그의 레포지토리 이름을 작성해줘요.
+
+<MDXImage
+  src="posts/giscus/giscus-app-page.png"
+  alt="Giscus App 설정1"
+  caption="Giscus App 설정1"
+/>
+
+그리고 `discussion`과 페이지를 어떻게 연결할 것인지 설정해줘요.  
+저는 다음과 같이 설정했어요.
+
+<MDXImage
+  src="posts/giscus/giscus-app-page-2.png"
+  alt="Giscus App 설정2"
+  caption="Giscus App 설정2"
+/>
+
+여기까지 설정하면 아래의 `giscus 사용` 섹션에 내 설정에 맞는 `script`를 복사해서 적용하면 됩니다.
+
+저는 `React`로 만든 블로그이기 때문에 [giscus component library](https://github.com/giscus/giscus-component)에서 `React` 예제를 확인해 적용했어요.
+
+```bash
+npm i @giscus/react   # for React/Preact
+npm i @giscus/vue     # for Vue
+npm i @giscus/svelte  # for Svelte
+npm i @giscus/solid   # for Solid
+```
+
+`React`는 위의 `script`의 설정을 통해 다음과 같이 컴포넌트로 만들어 사용할 수 있어요.
+
+```tsx
+import Giscus from "@giscus/react";
+
+export default function MyApp() {
+  return (
+    <Giscus
+      id="comments"
+      repo="giscus/giscus-component"
+      repoId="MDEwOlJlcG9zaXRvcnkzOTEzMTMwMjA="
+      category="Announcements"
+      categoryId="DIC_kwDOF1L2fM4B-hVS"
+      mapping="specific"
+      term="Welcome to @giscus/react component!"
+      reactionsEnabled="1"
+      emitMetadata="0"
+      inputPosition="top"
+      theme="light"
+      lang="en"
+      loading="lazy"
+    />
+  );
+}
+```
+
+이렇게 포스팅 페이지에 `Giscus` 컴포넌트를 추가하면 다음과 같이 보여지게 돼요.
+
+<MDXImage
+  src="posts/giscus/giscus-1.png"
+  alt="추가된 Giscus"
+  caption="추가된 Giscus"
+/>
+
+`Giscus`는 `markdown`으로 작성할 수 있어요.  
+추가로 특정 코드 체인지를 표시하거나 `github`에서 사용하는 `markdown`의 대부분의 기능을 지원해요.
+
+<MDXImage
+  src="posts/giscus/giscus-2.png"
+  alt="markdown으로 댓글 작성"
+  caption="markdown으로 댓글 작성"
+/>
+
+이렇게 댓글을 작성하면,
+
+<MDXImage
+  src="posts/giscus/giscus-4.png"
+  alt="작성된 댓글"
+  caption="작성된 댓글"
+/>
+
+이렇게 `markdown`이 적용된 댓글을 확인할 수 있어요.  
+그리고 다시 `discussions` 탭으로 돌아가 확인해보면 다음과 같이 추가된 댓글을 확인할 수 있어요.
+
+<MDXImage
+  src="posts/giscus/giscus-5.png"
+  alt="추가된 discussion"
+  caption="추가된 discussion"
+/>
+
+클릭해보면 다음과 같이 확인할 수 있고, 수정과 삭제 및 답글까지 추가할 수 있어요.
+
+<MDXImage
+  src="posts/giscus/giscus-6.png"
+  alt="discussion 상세보기"
+  caption="discussion 상세보기"
+/>
+
+## 닫는 글
+
+이렇게 블로그에 `discussion`을 이용해 댓글을 달 수 있는 `Giscus`를 추가해 보았어요.  
+앞으로도 기능을 조금씩 추가하면서 완성도 높은 블로그를 만들어 볼게요.
+
+## 참고
+
+https://jojoldu.tistory.com/704
